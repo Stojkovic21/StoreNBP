@@ -33,8 +33,9 @@ function Polica() {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await axiosPrivate.get("/item/Get/all");
-        setItems(response.data.items);
+        const response = await axiosPrivate.get("/item/get/all");
+        setItems(response.data);
+        
       } catch (err) {
       } finally {
       }

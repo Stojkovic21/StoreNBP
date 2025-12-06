@@ -18,11 +18,7 @@ export default function main() {
           </NavLink>
         </div>
         <nav className="nav-links">
-          <Link to="/newsupplier">New supplier</Link>
           <Link to="/newitem">New item</Link>
-          <Link className="visible" to="/newcategory">
-            New category
-          </Link>
           {isAuthenticated ? (
             <Link
               to="/login"

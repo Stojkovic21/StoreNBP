@@ -7,4 +7,5 @@ public class BillModel
     public List<OrderModel> Orders { get; set; }
     public DateTime Date { get; set; }
     public string CustomerId { get; set; }
+    public string Note { get; set; }
 }

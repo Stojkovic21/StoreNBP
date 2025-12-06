@@ -4,8 +4,6 @@ import HomePage from "./Views/HomePage/HomePage";
 import LoginPage from "./Views/Login/Login";
 import SignUp from "./Views/Signup/SignUp";
 import Additem from "./Views/AddItem/AddItem";
-import AddCategoty from "./Views/AddCategory/AddCategory";
-import AddSupplier from "./Views/AddSupplier/AddSupplier";
 import { AuthProvider } from "./context/AuthContrext";
 import { ShoppingCardProvider } from "./context/ShoppingCartContext";
 
@@ -29,16 +27,6 @@ const router = createBrowserRouter([
   {
     path: "/newitem",
     element: <Additem />,
-    errorElement: <div>404 not found</div>,
-  },
-  {
-    path: "/newcategory",
-    element: <AddCategoty />,
-    errorElement: <div>404 not found</div>,
-  },
-  {
-    path: "/newsupplier",
-    element: <AddSupplier />,
     errorElement: <div>404 not found</div>,
   },
   //profiles

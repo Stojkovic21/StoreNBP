@@ -43,7 +43,7 @@ public class GetCustomerController : ControllerBase
         {
             var userRef = db.GetCollection<UserModel>("User");
             var filter = Builders<UserModel>.Filter.Eq(f => f._id, ObjectId.Parse(id));
-            var user = userRef.Find(filter).FirstOrDefaultAsync();
+            var user = await userRef.Find(filter).FirstOrDefaultAsync();
             return Ok(user);
         }
         catch (Exception ex)

@@ -3,9 +3,8 @@ interface itemDto
     id: number
     name: string
     price: number
-    //brend: string
-    netoQuantity: number
-    availableQuantity: number
+    weight_g: string
+    with: string[]
 }
 
 export default itemDto
