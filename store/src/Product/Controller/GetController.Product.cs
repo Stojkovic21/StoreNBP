@@ -1,12 +1,12 @@
-using Item.Models;
+using Product.Models;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
 //using Models;
-namespace ItemController
+namespace ProductController
 {
     [ApiController]
-    [Route("item")]
+    [Route("product")]
     public class GetItemController : ControllerBase
     {
         private readonly IConfiguration configuration;
@@ -24,8 +24,8 @@ namespace ItemController
         {
             try
             {
-                var itemRef = client.GetDatabase("Store").GetCollection<ItemModel>("Item");
-                var allItems = await itemRef.Find<ItemModel>(_ => true).ToListAsync();
+                var itemRef = client.GetDatabase("Store").GetCollection<ProductModel>("Product");
+                var allItems = await itemRef.Find<ProductModel>(_ => true).ToListAsync();
                 return Ok(allItems);
             }
             catch (Exception ex)
@@ -39,9 +39,9 @@ namespace ItemController
         {
             try
             {
-                var itemRef = client.GetDatabase("Store").GetCollection<ItemModel>("Item");
-                var filter = Builders<ItemModel>.Filter.Eq(r => r._id, ObjectId.Parse(id));
-                var getItem = await itemRef.Find<ItemModel>(filter).FirstOrDefaultAsync();
+                var itemRef = client.GetDatabase("Store").GetCollection<ProductModel>("Product");
+                var filter = Builders<ProductModel>.Filter.Eq(r => r._id, id);
+                var getItem = await itemRef.Find<ProductModel>(filter).FirstOrDefaultAsync();
                 return Ok(getItem);
             }
             catch (Exception ex)
@@ -55,8 +55,8 @@ namespace ItemController
         {
             try
             {
-                var itemRef = client.GetDatabase("Store").GetCollection<ItemModel>("Item");
-                var filter = Builders<ItemModel>.Filter.Regex(x => x.Name, new MongoDB.Bson.BsonRegularExpression(naziv, "i"));
+                var itemRef = client.GetDatabase("Store").GetCollection<ProductModel>("Product");
+                var filter = Builders<ProductModel>.Filter.Regex(x => x.Name, new MongoDB.Bson.BsonRegularExpression(naziv, "i"));
                 var resolts = await itemRef.Find(filter).ToListAsync();
                 return Ok(resolts);
             }

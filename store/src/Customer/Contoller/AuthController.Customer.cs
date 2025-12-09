@@ -33,7 +33,7 @@ public class AuthCustomerController : ControllerBase
 
     [Route("signup")]
     [HttpPost]
-    public async Task<ActionResult> SignUp([FromBody] UserModel newUser)
+    public async Task<ActionResult> SignUp([FromBody] CustomerModel newUser)
     {
         newUser.Password = Argon2.Hash(newUser.Password);
         newUser.RefreshToken = GenerateRefreshToken();
@@ -42,10 +42,10 @@ public class AuthCustomerController : ControllerBase
         {
             await driver.VerifyConnectivityAsync();
             await using var session = driver.AsyncSession();
-            var userRef = db.GetCollection<UserModel>("User");
+            var userRef = db.GetCollection<CustomerModel>("User");
 
-            var filter = Builders<UserModel>.Filter.Eq(f => f.Email, newUser.Email);
-            var isExsist = await userRef.Find<UserModel>(filter).FirstOrDefaultAsync();
+            var filter = Builders<CustomerModel>.Filter.Eq(f => f.Email, newUser.Email);
+            var isExsist = await userRef.Find<CustomerModel>(filter).FirstOrDefaultAsync();
 
             if (isExsist is null)
             {
@@ -74,9 +74,9 @@ public class AuthCustomerController : ControllerBase
     {
         try
         {
-            var userRef = db.GetCollection<UserModel>("User");
-            var filter = Builders<UserModel>.Filter.Eq(f => f.Email, loginModel.Email);
-            var loginUser = await userRef.Find<UserModel>(filter).FirstOrDefaultAsync();
+            var userRef = db.GetCollection<CustomerModel>("User");
+            var filter = Builders<CustomerModel>.Filter.Eq(f => f.Email, loginModel.Email);
+            var loginUser = await userRef.Find<CustomerModel>(filter).FirstOrDefaultAsync();
             if (loginModel != null && Argon2.Verify(loginUser.Password, loginModel.Password))
             {
                 var refreshToken = await GenerateAndSaveRefreshTokenAsync(loginModel);
@@ -120,8 +120,8 @@ public class AuthCustomerController : ControllerBase
     private async Task<string> GenerateAndSaveRefreshTokenAsync(LoginModel loginData)
     {
         var refreshToken = GenerateRefreshToken();
-        var context = new EditCustomerController(configuration);
-        await context.EditCustomerAsync(new UserModel
+        var context = new EditCustomerController();
+        await context.EditCustomerAsync(new CustomerModel
         {
             RefreshToken = refreshToken,
             RefreshTokenTimeExpire = DateTime.UtcNow.AddDays(7),
@@ -134,7 +134,7 @@ public class AuthCustomerController : ControllerBase
         });
         return refreshToken;
     }
-    private async Task<ActionResult> TokenWorker(UserModel user)
+    private async Task<ActionResult> TokenWorker(CustomerModel user)
     {
         var refreshToken = await GenerateAndSaveRefreshTokenAsync(new LoginModel(user.Email, user.Password));
         Response.Cookies.Append("refreshToken", user.RefreshToken.ToString(), new CookieOptions

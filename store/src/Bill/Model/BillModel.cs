@@ -1,8 +1,10 @@
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 public class BillModel
 {
-    public ObjectId _id { get; set; }
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string _id { get; set; }
     public int TotalPrice { get; set; }
     public List<OrderModel> Orders { get; set; }
     public DateTime Date { get; set; }

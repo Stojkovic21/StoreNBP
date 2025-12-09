@@ -1,10 +1,10 @@
-using Item.Models;
+using Product.Models;
 using MongoDB.Bson;
 using Sprache;
 
 public class OrderModel
 {
-    public ItemModel Item { get; set; }
+    public ProductModel Item { get; set; }
     public double Count { get; set; }
     // public OrderModel(ItemModel item, int count)
     // {

@@ -12,47 +12,47 @@ public class CartController : ControllerBase
 {
     private readonly ConnectionMultiplexer muxer;
     private readonly IDatabase db;
-    // public CartController()
-    // {
-    //     muxer = ConnectionMultiplexer.Connect(
-    //         new ConfigurationOptions
-    //         {
-    //             EndPoints = { { "redis-17606.c90.us-east-1-3.ec2.redns.redis-cloud.com", 17606 } },
-    //             User = "default",
-    //             Password = "LgiWDuzQyyezm6euwuHE5moXxgxNMiFv"
-    //         }
-    //     );
-    //     db = muxer.GetDatabase();
-    // }
-    // [HttpPost]
-    // [Route("new")]
-    // public ActionResult AddItemInCart([FromBody] CartModel cartItem)
-    // {
-    //     try
-    //     {
-    //         //var db = muxer.GetDatabase();
-    //         JsonCommands json = db.JSON();
-    //         var key = "Item" + cartItem.Id;
-    //         string user = "User";
-    //         var item = new Dictionary<string, object>
-    //         {
-    //             {"Id",cartItem.Id},
-    //             {"Name", cartItem.Name},
-    //             {"Price", cartItem.Price},
-    //             {"Quantity", cartItem.Quantity}
-    //         };
-    //         if (!db.KeyExists(user))
-    //         {
-    //             json.Set(user,"$","{}");
-    //         }
-    //         json.Set(user, "$."+cartItem.Id, item);
-    //         return Ok("Uspesno dodato u bazu");
-    //     }
-    //     catch (System.Exception ex)
-    //     {
-    //         return BadRequest("Doslo je do greske prilikom povezivanja na bazu\n"+ex);
-    //     }
-    // }
+    public CartController()
+    {
+        muxer = ConnectionMultiplexer.Connect(
+            new ConfigurationOptions
+            {
+                EndPoints = { { "redis-11028.crce198.eu-central-1-3.ec2.cloud.redislabs.com", 11028 } },
+                User = "default",
+                Password = "IG50rIFucHcmYkBHNJOaDE8CAzYWLUJI"
+            }
+        );
+        db = muxer.GetDatabase();
+    }
+    [HttpPost]
+    [Route("new")]
+    public ActionResult AddItemInCart([FromBody] CartModel cartItem)
+    {
+        try
+        {
+            //var db = muxer.GetDatabase();
+            JsonCommands json = db.JSON();
+            var key = "Item" + cartItem.Id;
+            string user = "User";
+            var item = new Dictionary<string, object>
+            {
+                {"Id",cartItem.Id},
+                {"Name", cartItem.Name},
+                {"Price", cartItem.Price},
+                {"Quantity", cartItem.Quantity}
+            };
+            if (!db.KeyExists(user))
+            {
+                json.Set(user, "$", "{}");
+            }
+            json.Set(user, "$." + cartItem.Id, item);
+            return Ok("Uspesno dodato u bazu");
+        }
+        catch (System.Exception ex)
+        {
+            return BadRequest("Doslo je do greske prilikom povezivanja na bazu\n" + ex);
+        }
+    }
     // [HttpPatch]
     // [Route("inc/{itemId}/{inc}")]
     // public ActionResult IncrementCounter(string itemId, string inc)
@@ -70,31 +70,31 @@ public class CartController : ControllerBase
     //         return BadRequest("Something went wrong");
     //     }
     // }
-    // [HttpDelete]
-    // [Route("Remove/{id}")]
-    // public ActionResult RemoveItemFromCart(string id)
-    // {
-    //     try
-    //     {
-    //         // var db = muxer.GetDatabase();
-    //         JsonCommands json = db.JSON();
-    //         json.Del("User", $"$.item{id}");
-    //         return Ok("Item is removed successfully");
-    //     }
-    //     catch (System.Exception)
-    //     {
-    //         return BadRequest("Something went wrong");
-    //     }
-    // }
+    [HttpDelete]
+    [Route("Remove/{id}")]
+    public ActionResult RemoveItemFromCart(string id)
+    {
+        try
+        {
+            // var db = muxer.GetDatabase();
+            JsonCommands json = db.JSON();
+            json.Del("User", $"$.item{id}");
+            return Ok("Item is removed successfully");
+        }
+        catch (System.Exception)
+        {
+            return BadRequest("Something went wrong");
+        }
+    }
     [HttpGet]
     [Route("get")]
     public ActionResult GetAllItemsFromCurt()
     {
         return Ok(new
         {
-            item1=new { id = 1, name= "Pepsi", price= 135,quantity=2},
-            item2=new { id = 2, name= "Sinalco", price= 120,quantity=1},
-            item3=new { id = 3, name= "Smoki", price= 150,quantity=1},
+            item1 = new { id = 1, name = "Pepsi", price = 135, quantity = 2 },
+            item2 = new { id = 2, name = "Sinalco", price = 120, quantity = 1 },
+            item3 = new { id = 3, name = "Smoki", price = 150, quantity = 1 },
         });
         // try
         // {
@@ -141,7 +141,7 @@ public class CartController : ControllerBase
     //         throw;
     //     }
     // }
-   private class ItemSerializer
+    private class ItemSerializer
     {
         public int Id { get; set; }
         public string Name { get; set; }

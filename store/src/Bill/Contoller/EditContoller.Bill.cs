@@ -1,8 +1,8 @@
-using Item.Models;
+using Product.Models;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
-namespace ItemController
+namespace ProductController
 {
     [ApiController]
     [Route("bill")]
@@ -25,7 +25,7 @@ namespace ItemController
             try
             {
                 var billRef = client.GetDatabase("Store").GetCollection<BillModel>("Bill");
-                var filter = Builders<BillModel>.Filter.Eq(r => r._id, ObjectId.Parse(id));
+                var filter = Builders<BillModel>.Filter.Eq(r => r._id, id);
                 var result = await billRef.ReplaceOneAsync(filter, updatedBill);
                 if (result.ModifiedCount > 0)
                     return Ok("Bill is successfully updated");

@@ -6,43 +6,41 @@ using Neo4j.Driver;
 namespace ProductController
 {
     [ApiController]
-    [Route("bill")]
-    public class DeleteBillController : ControllerBase
+    [Route("product")]
+    public class DeleteItemController : ControllerBase
     {
         private readonly MongoClient client;
         private readonly IDriver driver;
         private readonly Neo4jQuery neo4JQuery;
-
-        public DeleteBillController()
+        public DeleteItemController()
         {
-            client = new MongoClient(Environment.GetEnvironmentVariable("MONGODB_URI"));
-
             var uri = Environment.GetEnvironmentVariable("URI");
             var user = Environment.GetEnvironmentVariable("Username");
             var password = Environment.GetEnvironmentVariable("Password");
 
             this.driver = GraphDatabase.Driver(uri, AuthTokens.Basic(user, password));
             neo4JQuery = new();
+            client = new MongoClient(Environment.GetEnvironmentVariable("MONGODB_URI"));
         }
         // [Authorize(Roles ="Admin")]
         [Route("delete/{id}")]
         [HttpDelete]
-        public async Task<ActionResult> ObrisiBillAsync(string id)
+        public async Task<ActionResult> ObrisiItemAsync(string id)
         {
             try
             {
-                var billRef = client.GetDatabase("Store").GetCollection<BillModel>("Bill");
-                var filter = Builders<BillModel>.Filter.Eq(r => r._id, id);
-                var result = await billRef.FindOneAndDeleteAsync(filter);
+                var productRef = client.GetDatabase("Store").GetCollection<ProductModel>("Product");
+                var filter = Builders<ProductModel>.Filter.Eq(r => r._id, id);
+                var result = await productRef.FindOneAndDeleteAsync(filter);
                 if (result is null)
-                    return NotFound("Mongo bill not found");
+                    return NotFound("Mongo product not found");
 
                 await driver.VerifyConnectivityAsync();
                 await using var session = driver.AsyncSession();
 
-                var testQuety = neo4JQuery.QueryByOneElement("Bill", "id", "id", "RETURN");
+                var testQuety = neo4JQuery.QueryByOneElement("Product", "id", "id", "RETURN");
                 var deleteQuery = @"
-                MATCH (n:Bill {id: $id})
+                MATCH (n:Product {id: $id})
                 DETACH DELETE n";
                 var parameters = new Dictionary<string, object>
                 {
@@ -51,10 +49,10 @@ namespace ProductController
 
                 var resultN = await neo4JQuery.ExecuteReadAsync(session, testQuety, parameters);
                 if (resultN is null)
-                    return NotFound("Neo4J bill not found");
+                    return NotFound("Neo4J product not found");
 
                 var res = await neo4JQuery.ExecuteWriteAsync(session, deleteQuery, parameters);
-                return Ok("Bill successfuly deleted");
+                return Ok("Product successfuly deleted");
             }
             catch (Exception ex)
             {

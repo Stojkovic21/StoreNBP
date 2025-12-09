@@ -32,9 +32,9 @@ public class DeleteCustomerController : ControllerBase
     {
         try
         {
-            var userRef = db.GetCollection<UserModel>("User");
-            var filter = Builders<UserModel>.Filter.Eq(f => f.Email, email);
-            var result = await userRef.FindOneAndDeleteAsync<UserModel>(filter);
+            var userRef = db.GetCollection<CustomerModel>("User");
+            var filter = Builders<CustomerModel>.Filter.Eq(f => f.Email, email);
+            var result = await userRef.FindOneAndDeleteAsync<CustomerModel>(filter);
             if (result is null)
             { return NotFound("Item not found"); }
             return Ok("Item successfuly deleted");

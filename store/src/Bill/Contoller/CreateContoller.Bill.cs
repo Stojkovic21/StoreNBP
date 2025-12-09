@@ -1,8 +1,8 @@
-using Item.Models;
+using Product.Models;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using Neo4j.Driver;
-namespace ItemController
+namespace ProductController
 {
     [ApiController]
     [Route("bill")]

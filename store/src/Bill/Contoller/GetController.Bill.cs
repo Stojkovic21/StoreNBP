@@ -1,21 +1,18 @@
-using Item.Models;
+using Product.Models;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver;
-//using Models;
-namespace ItemController
+
+namespace ProductController
 {
     [ApiController]
     [Route("bill")]
     public class GetBillController : ControllerBase
     {
-        private readonly IConfiguration configuration;
         private readonly MongoClient client;
 
-        public GetBillController(IConfiguration configuration)
+        public GetBillController()
         {
-            this.configuration = configuration;
-
             client = new MongoClient(Environment.GetEnvironmentVariable("MONGODB_URI"));
         }
         [Route("get/all")]
@@ -40,7 +37,7 @@ namespace ItemController
             try
             {
                 var billRef = client.GetDatabase("Store").GetCollection<BillModel>("Item");
-                var filter = Builders<BillModel>.Filter.Eq(r => r._id, ObjectId.Parse(id));
+                var filter = Builders<BillModel>.Filter.Eq(r => r._id, id);
                 var getBill = await billRef.Find<BillModel>(filter).FirstOrDefaultAsync();
                 return Ok(getBill);
             }

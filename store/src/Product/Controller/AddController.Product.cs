@@ -1,23 +1,20 @@
-using Item.Models;
+using Product.Models;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using Neo4j.Driver;
-namespace ItemController
+namespace ProductController
 {
     [ApiController]
-    [Route("item")]
-    public class AddItemController : ControllerBase
+    [Route("product")]
+    public class AddProductController : ControllerBase
     {
-        private readonly IConfiguration configuration;
         private readonly MongoClient client;
         private readonly IDriver driver;
         private readonly Neo4jQuery neo4JQuery;
         private readonly IMongoDatabase db;
 
-        public AddItemController(IConfiguration configuration)
+        public AddProductController()
         {
-            this.configuration = configuration;
-
             client = new MongoClient(Environment.GetEnvironmentVariable("MONGODB_URI"));
 
             db = client.GetDatabase("Store");
@@ -32,24 +29,24 @@ namespace ItemController
         //[Authoriza(Roles = "Admin")]
         [Route("add")]
         [HttpPost]
-        public async Task<ActionResult> AddItemAsync([FromBody] ItemModel item)
+        public async Task<ActionResult> AddItemAsync([FromBody] ProductModel product)
         {
             try
             {
                 await driver.VerifyConnectivityAsync();
                 await using var session = driver.AsyncSession();
-                if (item.Name == "") return BadRequest("Unesite Naziv");
-                var itemRef = db.GetCollection<ItemModel>("Item");
+                if (product.Name == "") return BadRequest("Unesite naziv");
+                var productRef = db.GetCollection<ProductModel>("Product");
 
-                await itemRef.InsertOneAsync(item);
+                await productRef.InsertOneAsync(product);
                 var query = @"
-                CREATE(n:Item {id:$id})";
+                CREATE(n:Product {id:$id})";
                 var parameters = new Dictionary<string, object>
                 {
-                    {"id",item._id.ToString()},
+                    {"id",product._id},
                 };
                 var result = await neo4JQuery.ExecuteWriteAsync(session, query, parameters);
-                return Ok("Item added successfulyu");
+                return Ok("Product added successfulyu");
             }
             catch (Exception ex)
             {

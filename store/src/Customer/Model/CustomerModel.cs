@@ -1,9 +1,10 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-public class UserModel
+public class CustomerModel
 {
-    public ObjectId _id { get; set; }
+    [BsonRepresentation(BsonType.ObjectId)]
+    public string _id { get; set; }
     public string Email { get; set; }
     public string Password { get; set; }
     public string Role { get; set; }

@@ -26,8 +26,8 @@ public class GetCustomerController : ControllerBase
     {
         try
         {
-            var userRef = db.GetCollection<UserModel>("User");
-            var allUsers = await userRef.Find<UserModel>(_ => true).ToListAsync();
+            var userRef = db.GetCollection<CustomerModel>("User");
+            var allUsers = await userRef.Find<CustomerModel>(_ => true).ToListAsync();
             return Ok(allUsers);
         }
         catch (Exception ex)
@@ -41,8 +41,8 @@ public class GetCustomerController : ControllerBase
     {
         try
         {
-            var userRef = db.GetCollection<UserModel>("User");
-            var filter = Builders<UserModel>.Filter.Eq(f => f._id, ObjectId.Parse(id));
+            var userRef = db.GetCollection<CustomerModel>("User");
+            var filter = Builders<CustomerModel>.Filter.Eq(f => f._id, id);
             var user = await userRef.Find(filter).FirstOrDefaultAsync();
             return Ok(user);
         }
