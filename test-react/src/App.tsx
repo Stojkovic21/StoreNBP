@@ -6,6 +6,8 @@ import SignUp from "./Views/Signup/SignUp";
 import Additem from "./Views/AddItem/AddItem";
 import { AuthProvider } from "./context/AuthContrext";
 import { ShoppingCardProvider } from "./context/ShoppingCartContext";
+import ItemProfile from "./Views/ProduktPage/ProduktPage";
+import ProductCard from "./Views/ProduktPage/ProduktPage";
 
 const router = createBrowserRouter([
   //razlika izmedju link i a je sto a refresuje ceo html i js a link samo prosledi na tu stranicu
@@ -23,6 +25,11 @@ const router = createBrowserRouter([
     path: "/signup",
     element: <SignUp />,
     errorElement: <div>404 not found</div>,
+  },
+  {
+    path: "/product/:productid",
+    element: <ProductCard/>,
+    errorElement: <div>404 not found</div>
   },
   {
     path: "/newitem",

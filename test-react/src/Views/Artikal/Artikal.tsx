@@ -1,10 +1,12 @@
+import { Link } from "react-router-dom";
 import itemDto from "../../DTOs/ItemDto";
 import "./Artikal.css";
 
 function Artikal(item: itemDto) {
   return (
     <>
-      <div className="card shadow-lg rounded-2xl kartica">
+    <div className="card shadow-lg rounded-2xl kartica">
+      <Link to={`/product/${item._id}`}>
         <h2 className="card-titel">{item.name}</h2>
         {/* <p className="text-gray-700">
           Brend: <span className="font-semibold">{item.brend}</span>
@@ -21,7 +23,8 @@ function Artikal(item: itemDto) {
         >
           Dodaj u korpu
         </button>
-      </div>
+      </Link>
+    </div>
     </>
   );
 }

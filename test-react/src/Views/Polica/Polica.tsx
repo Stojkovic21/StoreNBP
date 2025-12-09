@@ -35,7 +35,7 @@ function Polica() {
       try {
         const response = await axiosPrivate.get("/item/get/all");
         setItems(response.data);
-        
+        console.log("Polica "+ response.data);
       } catch (err) {
       } finally {
       }
@@ -49,7 +49,7 @@ function Polica() {
     <>
       <div className="polica">
         {items
-          ? items.map((item) => <Artikal key={item.id} {...item} />)
+          ? items.map((item) => <Artikal key={item._id} {...item} />)
           : null}
       </div>
 

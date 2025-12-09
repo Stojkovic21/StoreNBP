@@ -1,0 +1,137 @@
+/* Kontejner za centriranje na ekranu */
+.product-container {
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f4f4f9;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Glavna kartica proizvoda */
+.product-card {
+  display: flex; /* Ovo postavlja sliku levo i tekst desno */
+  align-items: flex-start;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+  overflow: hidden;
+  max-width: 900px;
+  width: 100%;
+}
+
+/* LEVA STRANA - SLIKA */
+.product-image-section {
+  flex: 1;
+  min-width: 300px;
+  position: sticky; /* Magija se dešava ovde */
+  top: 20px; /* Razmak od vrha ekrana dok se skroluje */
+  align-self: flex-start;
+  height: auto;
+}
+
+.product-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Slika popunjava prostor bez deformacije */
+  display: block;
+}
+
+/* DESNA STRANA - SADRŽAJ */
+.product-details-section {
+  flex: 1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centrira sadržaj vertikalno ako je malo teksta */
+  min-width: 0;
+  word-wrap: break-word; /* Prelama dugačke reči ako su šire od kontejnera */
+  overflow-wrap: break-word;
+}
+
+.product-title {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 2rem;
+}
+
+.product-price {
+  font-size: 1.5rem;
+  color: #2c3e50;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.product-description {
+  color: #666;
+  line-height: 1.8; /* Povećajte prored za lakše čitanje dugog teksta */
+  margin-bottom: 30px;
+  border-left: 4px solid #3498db;
+  padding-left: 15px;
+  text-align: justify;
+}
+
+/* Stilovi za formu */
+.order-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #444;
+}
+
+.form-group input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  width: 80px;
+}
+
+.error-msg {
+  color: #e74c3c;
+  font-size: 0.875rem;
+}
+
+.btn-order {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  align-self: flex-start;
+}
+
+.btn-order:hover {
+  background-color: #2980b9;
+}
+
+/* RESPONSIVE - Za mobilne telefone */
+@media (max-width: 768px) {
+  .product-card {
+    flex-direction: column; /* Slika ide gore, tekst dole */
+  }
+
+  .product-image-section {
+    min-width: 100%;
+    height: 250px;
+  }
+  
+  .product-details-section {
+    padding: 20px;
+  }
+}

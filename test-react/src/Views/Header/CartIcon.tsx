@@ -1,8 +1,8 @@
 import useShoppingCart from "../../hooks/useShoppingCart";
 import "./Header.css";
 export default function Card() {
-  let cartQuantity = 0;
-  const { openCart } = useShoppingCart();
+  // let cartQuantity = 0;
+  const { openCart, cartQuantity } = useShoppingCart();
   return (
     <>
       {

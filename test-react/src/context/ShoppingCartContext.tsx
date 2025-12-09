@@ -16,7 +16,7 @@ export type ShoppingCartProviderValue = {
   decreaseCartQuantity: (id: number) => void;
   removeFromCart: (id: number) => void;
   previusItemsInCart: (itemsInCart: CartItem[]) => void;
-  //cartQuantity: number;
+  cartQuantity: number;
   cartItems: CartItem[];
 };
 type CartItem = {
@@ -29,10 +29,10 @@ export function ShoppingCardProvider({ children }: ShoppingCartProps) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isOpen, setIsOpen] = useState(false);
 
-  // const cartQuantity = cartItems.reduce(
-  //   (quantity, item) => item.quantity + quantity,
-  //   0
-  // );
+  const cartQuantity = cartItems.reduce(
+    (quantity) => 1 + quantity,
+    0
+  );
   function openCart() {
     setIsOpen(true);
   }
@@ -98,7 +98,7 @@ export function ShoppingCardProvider({ children }: ShoppingCartProps) {
         increaseCartQuantity,
         decreaseCartQuantity,
         removeFromCart,
-        //cartQuantity,
+        cartQuantity,
         cartItems,
         previusItemsInCart,
       }}

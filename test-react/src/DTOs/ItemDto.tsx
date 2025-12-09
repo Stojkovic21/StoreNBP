@@ -1,10 +1,11 @@
 interface itemDto
 {
-    id: number
+    _id: string
     name: string
     price: number
     weight_g: string
     with: string[]
+    description: string
 }
 
 export default itemDto

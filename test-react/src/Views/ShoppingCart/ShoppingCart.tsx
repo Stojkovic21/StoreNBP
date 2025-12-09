@@ -43,7 +43,8 @@ function ShoppingCart({ isOpen }: ShoppingCartProps) {
           <button
             className="close-button"
             onClick={() => {
-              decreaseCartQuantity(1);
+              //decreaseCartQuantity(1);
+              closeCart();
             }}
           >
             ×
