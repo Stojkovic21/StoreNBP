@@ -26,26 +26,26 @@ public class CartController : ControllerBase
     }
     [HttpPost]
     [Route("new")]
-    public ActionResult AddItemInCart([FromBody] CartModel cartItem)
+    public ActionResult AddItemInCart([FromBody] CartModel cartProduct)
     {
         try
         {
             //var db = muxer.GetDatabase();
             JsonCommands json = db.JSON();
-            var key = "Item" + cartItem.Id;
-            string user = "User";
-            var item = new Dictionary<string, object>
+            var key = "Product " + cartProduct.Id;
+            string customer = "Customer";
+            var product = new Dictionary<string, object>
             {
-                {"Id",cartItem.Id},
-                {"Name", cartItem.Name},
-                {"Price", cartItem.Price},
-                {"Quantity", cartItem.Quantity}
+                {"Id",cartProduct.Id},
+                {"Name", cartProduct.Name},
+                {"Price", cartProduct.Price},
+                {"Quantity", cartProduct.Quantity}
             };
-            if (!db.KeyExists(user))
+            if (!db.KeyExists(customer))
             {
-                json.Set(user, "$", "{}");
+                json.Set(customer, "$", "{}");
             }
-            json.Set(user, "$." + cartItem.Id, item);
+            json.Set(customer, "$." + cartProduct.Id, product);
             return Ok("Uspesno dodato u bazu");
         }
         catch (System.Exception ex)
@@ -78,8 +78,8 @@ public class CartController : ControllerBase
         {
             // var db = muxer.GetDatabase();
             JsonCommands json = db.JSON();
-            json.Del("User", $"$.item{id}");
-            return Ok("Item is removed successfully");
+            json.Del("Customer", $"$.{id}");
+            return Ok("Product is removed successfully");
         }
         catch (System.Exception)
         {
@@ -90,67 +90,67 @@ public class CartController : ControllerBase
     [Route("get")]
     public ActionResult GetAllItemsFromCurt()
     {
-        return Ok(new
+        // return Ok(new
+        // {
+        //     item1 = new { id = 1, name = "Pepsi", price = 135, quantity = 2 },
+        //     item2 = new { id = 2, name = "Sinalco", price = 120, quantity = 1 },
+        //     item3 = new { id = 3, name = "Smoki", price = 150, quantity = 1 },
+        // });
+        try
         {
-            item1 = new { id = 1, name = "Pepsi", price = 135, quantity = 2 },
-            item2 = new { id = 2, name = "Sinalco", price = 120, quantity = 1 },
-            item3 = new { id = 3, name = "Smoki", price = 150, quantity = 1 },
-        });
-        // try
-        // {
-        //     var db = muxer.GetDatabase();
-        //     var json = db.JSON();
-        //     if (db.KeyExists("User"))
-        //     {
-        //         var result = db.Execute("JSON.GET", "User", "$").ToString();
+            var db = muxer.GetDatabase();
+            var json = db.JSON();
+            if (db.KeyExists("Customer"))
+            {
+                //var result = (string)db.Execute("JSON.GET", "Customer", "$");
 
-        //          var itemWrapper = JsonSerializer.Deserialize<List<Dictionary<string, ItemSerializer>>>(result);
-        //          var items = itemWrapper?[0];
+                var products = json.Get<Dictionary<string, CartModel>>("Customer");
 
-        //         // foreach (var entry in items)
-        //         // {
-        //         //     Console.WriteLine($"{entry.Key}: {entry.Value.Name}, {entry.Value.Price} RSD x {entry.Value.Quantity}");
-        //         // }
-        //         return Ok(items);
-        //     }
-        //     return BadRequest("Key's not found");
-        // }
-        // catch (System.Exception)
-        // {
-        //     return BadRequest("Something went wrong");
-        // }
+                // foreach (var entry in items)
+                // {
+                //     Console.WriteLine($"{entry.Key}: {entry.Value.Name}, {entry.Value.Price} RSD x {entry.Value.Quantity}");
+                // }
+                return Ok(products);
+            }
+            return BadRequest("Key's not found");
+        }
+        catch (System.Exception x)
+        {
+            return BadRequest(x);
+        }
     }
-    // [HttpGet]
-    // [Route("get/{id}")]
-    // public ActionResult GetItemById(int id)
+    [HttpGet]
+    [Route("get/{id}")]
+    public ActionResult GetItemById(string id)
+    {
+        try
+        {
+            // var db = muxer.GetDatabase();
+            var json = db.JSON();
+            if (db.KeyExists("Customer"))
+            {
+                //var result = db.Execute("JSON.GET", "User", "$. "+id).ToString();
+                var result = json.Get<CartModel>("Customer", $"$.{id}");
+                return Ok(result);
+            }
+            return BadRequest("Item does not exist");
+        }
+        catch (System.Exception)
+        {
+            throw;
+        }
+    }
+    // private class ProductSerializer
     // {
-    //     try
-    //     {
-    //         // var db = muxer.GetDatabase();
-    //         var json = db.JSON();
-    //         if (db.KeyExists("User"))
-    //         {
-    //             var result = db.Execute("JSON.GET", "User", "$. "+id).ToString();
-    //             var itemWrapper = JsonSerializer.Deserialize<List<ItemSerializer>>(result);
-    //             return Ok(itemWrapper?[0]);
-    //         }
-    //         return BadRequest("Item does not exist");
-    //     }
-    //     catch (System.Exception)
-    //     {
-    //         throw;
-    //     }
+    //     public int Id { get; set; }
+    //     public string Name { get; set; }
+    //     public int Price { get; set; }
+    //     public int Quantity { get; set; }
     // }
-    private class ItemSerializer
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public int Price { get; set; }
-        public int Quantity { get; set; }
-    }
-    class Item
-    {
-        public ItemSerializer GetItem { get; set; }
-    }
+    // class Item
+    // {
+    //     public ProductSerializer GetItem { get; set; }
+    // }
+
 }
 

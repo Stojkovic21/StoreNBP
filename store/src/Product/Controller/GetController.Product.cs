@@ -7,12 +7,12 @@ namespace ProductController
 {
     [ApiController]
     [Route("product")]
-    public class GetItemController : ControllerBase
+    public class GetProductController : ControllerBase
     {
         private readonly IConfiguration configuration;
         private readonly MongoClient client;
 
-        public GetItemController(IConfiguration configuration)
+        public GetProductController(IConfiguration configuration)
         {
             this.configuration = configuration;
 

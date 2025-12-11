@@ -7,12 +7,12 @@ namespace ProductController
 {
     [ApiController]
     [Route("product")]
-    public class DeleteItemController : ControllerBase
+    public class DeleteProductController : ControllerBase
     {
         private readonly MongoClient client;
         private readonly IDriver driver;
         private readonly Neo4jQuery neo4JQuery;
-        public DeleteItemController()
+        public DeleteProductController()
         {
             var uri = Environment.GetEnvironmentVariable("URI");
             var user = Environment.GetEnvironmentVariable("Username");

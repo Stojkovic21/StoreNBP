@@ -7,15 +7,12 @@ namespace ProductController
 {
     [ApiController]
     [Route("product")]
-    public class EditItemController : ControllerBase
+    public class EditProductController : ControllerBase
     {
-        private readonly IConfiguration configuration;
         private readonly MongoClient client;
 
-        public EditItemController(IConfiguration configuration)
+        public EditProductController()
         {
-            this.configuration = configuration;
-
             client = new MongoClient(Environment.GetEnvironmentVariable("MONGODB_URI"));
         }
         // [Authorize(Roles ="Admin")]

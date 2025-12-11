@@ -3,7 +3,7 @@ import "./App.css";
 import HomePage from "./Views/HomePage/HomePage";
 import LoginPage from "./Views/Login/Login";
 import SignUp from "./Views/Signup/SignUp";
-import Additem from "./Views/AddItem/AddItem";
+import AddProduct from "./Views/AddProduct/AddProduct";
 import { AuthProvider } from "./context/AuthContrext";
 import { ShoppingCardProvider } from "./context/ShoppingCartContext";
 import ItemProfile from "./Views/ProduktPage/ProduktPage";
@@ -33,7 +33,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/newitem",
-    element: <Additem />,
+    element: <AddProduct />,
     errorElement: <div>404 not found</div>,
   },
   //profiles

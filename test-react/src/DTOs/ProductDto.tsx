@@ -1,4 +1,4 @@
-interface itemDto
+interface productDto
 {
     _id: string
     name: string
@@ -8,4 +8,4 @@ interface itemDto
     description: string
 }
 
-export default itemDto
+export default productDto

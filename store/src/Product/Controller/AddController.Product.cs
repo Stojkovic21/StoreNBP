@@ -43,7 +43,7 @@ namespace ProductController
                 CREATE(n:Product {id:$id})";
                 var parameters = new Dictionary<string, object>
                 {
-                    {"id",product._id},
+                    {"id",product._id}
                 };
                 var result = await neo4JQuery.ExecuteWriteAsync(session, query, parameters);
                 return Ok("Product added successfulyu");
