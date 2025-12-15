@@ -6,7 +6,6 @@ import SignUp from "./Views/Signup/SignUp";
 import AddProduct from "./Views/AddProduct/AddProduct";
 import { AuthProvider } from "./context/AuthContrext";
 import { ShoppingCardProvider } from "./context/ShoppingCartContext";
-import ItemProfile from "./Views/ProduktPage/ProduktPage";
 import ProductCard from "./Views/ProduktPage/ProduktPage";
 
 const router = createBrowserRouter([

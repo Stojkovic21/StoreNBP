@@ -7,17 +7,24 @@ const ShoppingCartContext = createContext<
 >(undefined);
 
 type ShoppingCartProps = PropsWithChildren;
+type cartContext={
+  isOpen: boolean;
+}
 
 export type ShoppingCartProviderValue = {
   openCart: () => void;
   closeCart: () => void;
-  getItemQuantity: (id: number) => number;
-  increaseCartQuantity: (newItem: CartItem) => void;
-  decreaseCartQuantity: (id: number) => void;
-  removeFromCart: (id: number) => void;
-  previusItemsInCart: (itemsInCart: CartItem[]) => void;
+  // getItemQuantity: (id: number) => number;
+  // increaseCartQuantity: (newItem: CartItem) => void;
+  // decreaseCartQuantity: (id: number) => void;
+  // removeFromCart: (id: number) => void;
+  // previusItemsInCart: (itemsIItems.rednCart: CartItem[]) => void;
   cartQuantity: number;
-  cartItems: CartItem[];
+  incCartQuantity: ()=>void;
+  decCartQuantity: ()=>void;
+  quantityIsChanged:boolean;
+  setQuantityIsChangedGlobal:()=>void;
+  // cartItems: CartItem[];
 };
 type CartItem = {
   id: number;
@@ -26,81 +33,92 @@ type CartItem = {
   quantity: number;
 };
 export function ShoppingCardProvider({ children }: ShoppingCartProps) {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  let [cartQuantity, setCartQuantity] = useState<number>(0);
   const [isOpen, setIsOpen] = useState(false);
+  const [quantityIsChanged, setQuantityIsChanged]=useState(false);
 
-  const cartQuantity = cartItems.reduce(
-    (quantity) => 1 + quantity,
-    0
-  );
+  // let cartQuantity = cartItems.reduce(
+  //   (quantity) => 1 + quantity,
+  //   0
+  // );
+  function setQuantityIsChangedGlobal(){
+    if(quantityIsChanged==false) setQuantityIsChanged(true);
+    else setQuantityIsChanged(false);
+  }
+  function incCartQuantity(){setCartQuantity(cartQuantity++);}
+  function decCartQuantity(){setCartQuantity(cartQuantity--);}
   function openCart() {
     setIsOpen(true);
   }
   function closeCart() {
     setIsOpen(false);
   }
-  function previusItemsInCart(itemsInCart: CartItem[]) {
-    setCartItems(itemsInCart);
-  }
-  function getItemQuantity(id: number) {
-    return cartItems.find((item) => item.id === id)?.quantity || 0;
-  }
-  function increaseCartQuantity(newItem: CartItem) {
-    setCartItems((currItem) => {
-      if (currItem.find((item) => item.id === newItem.id) == null) {
-        axios.post("/cart/new", newItem);
-        return [
-          ...currItem,
-          {
-            id: newItem.id,
-            name: newItem.name,
-            price: newItem.price,
-            quantity: 1,
-          },
-        ];
-      } else {
-        return currItem.map((item) => {
-          if (item.id === newItem.id) {
-            axios.patch("/cart/inc/itemId=" + newItem.id + "/inc=1");
-            return { ...item, quantity: item.quantity + 1 };
-          } else return item;
-        });
-      }
-    });
-  }
-  function decreaseCartQuantity(id: number) {
-    setCartItems((currItem) => {
-      if (currItem.find((item) => item.id === id)?.quantity === 1) {
-        axios.delete("/cart/Remove/id=" + id);
-        return currItem.filter((item) => item.id !== id);
-      } else {
-        return currItem.map((item) => {
-          if (item.id === id) {
-            axios.patch("/cart/inc/" + id + "/-1");
-            return { ...item, quantity: item.quantity - 1 };
-          } else return item;
-        });
-      }
-    });
-    //console.log(cartItems);
-  }
-  function removeFromCart(id: number) {
-    setCartItems((currItem) => {
-      return currItem.filter((item) => item.id !== id);
-    });
-  }
+  // function previusItemsInCart(itemsInCart: CartItem[]) {
+  //   setCartItems(itemsInCart);
+  // }
+  // function getItemQuantity(id: number) {
+  //   return cartItems.find((item) => item.id === id)?.quantity || 0;
+  // }
+  // function increaseCartQuantity(newItem: CartItem) {
+  //   setCartItems((currItem) => {
+  //     if (currItem.find((item) => item.id === newItem.id) == null) {
+  //       axios.post("/cart/new", newItem);
+  //       return [
+  //         ...currItem,
+  //         {
+  //           id: newItem.id,
+  //           name: newItem.name,
+  //           price: newItem.price,
+  //           quantity: 1,
+  //         },
+  //       ];
+  //     } else {
+  //       return currItem.map((item) => {
+  //         if (item.id === newItem.id) {
+  //           axios.patch("/cart/inc/itemId=" + newItem.id + "/inc=1");
+  //           return { ...item, quantity: item.quantity + 1 };
+  //         } else return item;
+  //       });
+  //     }
+  //   });
+  // }
+  // function decreaseCartQuantity(id: number) {
+  //   setCartItems((currItem) => {
+  //     if (currItem.find((item) => item.id === id)?.quantity === 1) {
+  //       axios.delete("/cart/Remove/id=" + id);
+  //       return currItem.filter((item) => item.id !== id);
+  //     } else {
+  //       return currItem.map((item) => {
+  //         if (item.id === id) {
+  //           axios.patch("/cart/inc/" + id + "/-1");
+  //           return { ...item, quantity: item.quantity - 1 };
+  //         } else return item;
+  //       });
+  //     }
+  //   });
+  //   //console.log(cartItems);
+  // }
+  // function removeFromCart(id: number) {
+  //   setCartItems((currItem) => {
+  //     return currItem.filter((item) => item.id !== id);
+  //   });
+  //}
   return (
     <ShoppingCartContext
       value={{
         openCart,
         closeCart,
-        getItemQuantity,
-        increaseCartQuantity,
-        decreaseCartQuantity,
-        removeFromCart,
+        // getItemQuantity,
+        // increaseCartQuantity,
+        // decreaseCartQuantity,
+        // removeFromCart,
         cartQuantity,
-        cartItems,
-        previusItemsInCart,
+        incCartQuantity,
+        decCartQuantity,
+        quantityIsChanged,
+        setQuantityIsChangedGlobal,
+        // cartItems,
+        // previusItemsInCart,
       }}
     >
       {children}

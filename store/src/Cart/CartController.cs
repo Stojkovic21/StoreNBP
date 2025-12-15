@@ -19,7 +19,8 @@ public class CartController : ControllerBase
             {
                 EndPoints = { { "redis-11028.crce198.eu-central-1-3.ec2.cloud.redislabs.com", 11028 } },
                 User = "default",
-                Password = "IG50rIFucHcmYkBHNJOaDE8CAzYWLUJI"
+                Password = "IG50rIFucHcmYkBHNJOaDE8CAzYWLUJI",
+                AbortOnConnectFail = false,
             }
         );
         db = muxer.GetDatabase();
@@ -30,7 +31,6 @@ public class CartController : ControllerBase
     {
         try
         {
-            //var db = muxer.GetDatabase();
             JsonCommands json = db.JSON();
             var key = "Product " + cartProduct.Id;
             string customer = "Customer";
@@ -53,30 +53,28 @@ public class CartController : ControllerBase
             return BadRequest("Doslo je do greske prilikom povezivanja na bazu\n" + ex);
         }
     }
-    // [HttpPatch]
-    // [Route("inc/{itemId}/{inc}")]
-    // public ActionResult IncrementCounter(string itemId, string inc)
-    // {
-    //     try
-    //     {
-    //         // var db = muxer.GetDatabase();
-    //         JsonCommands json = db.JSON();
-    //         json.NumIncrby("User", $"$.item{itemId}.Quantity", double.Parse(inc));
+    [HttpPatch]
+    [Route("inc/{productId}/{inc}")]
+    public ActionResult IncrementCounter(string productId, string inc)
+    {
+        try
+        {
+            JsonCommands json = db.JSON();
+            json.NumIncrby("Customer", $"$.{productId}.Quantity", double.Parse(inc));
 
-    //         return Ok("Increment successfully");
-    //     }
-    //     catch (System.Exception)
-    //     {
-    //         return BadRequest("Something went wrong");
-    //     }
-    // }
+            return Ok("Increment successfully");
+        }
+        catch (System.Exception x)
+        {
+            return BadRequest(x);
+        }
+    }
     [HttpDelete]
-    [Route("Remove/{id}")]
+    [Route("remove/{id}")]
     public ActionResult RemoveItemFromCart(string id)
     {
         try
         {
-            // var db = muxer.GetDatabase();
             JsonCommands json = db.JSON();
             json.Del("Customer", $"$.{id}");
             return Ok("Product is removed successfully");
@@ -90,26 +88,15 @@ public class CartController : ControllerBase
     [Route("get")]
     public ActionResult GetAllItemsFromCurt()
     {
-        // return Ok(new
-        // {
-        //     item1 = new { id = 1, name = "Pepsi", price = 135, quantity = 2 },
-        //     item2 = new { id = 2, name = "Sinalco", price = 120, quantity = 1 },
-        //     item3 = new { id = 3, name = "Smoki", price = 150, quantity = 1 },
-        // });
         try
         {
             var db = muxer.GetDatabase();
             var json = db.JSON();
             if (db.KeyExists("Customer"))
             {
-                //var result = (string)db.Execute("JSON.GET", "Customer", "$");
 
                 var products = json.Get<Dictionary<string, CartModel>>("Customer");
 
-                // foreach (var entry in items)
-                // {
-                //     Console.WriteLine($"{entry.Key}: {entry.Value.Name}, {entry.Value.Price} RSD x {entry.Value.Quantity}");
-                // }
                 return Ok(products);
             }
             return BadRequest("Key's not found");
@@ -125,11 +112,9 @@ public class CartController : ControllerBase
     {
         try
         {
-            // var db = muxer.GetDatabase();
             var json = db.JSON();
             if (db.KeyExists("Customer"))
             {
-                //var result = db.Execute("JSON.GET", "User", "$. "+id).ToString();
                 var result = json.Get<CartModel>("Customer", $"$.{id}");
                 return Ok(result);
             }
@@ -140,17 +125,5 @@ public class CartController : ControllerBase
             throw;
         }
     }
-    // private class ProductSerializer
-    // {
-    //     public int Id { get; set; }
-    //     public string Name { get; set; }
-    //     public int Price { get; set; }
-    //     public int Quantity { get; set; }
-    // }
-    // class Item
-    // {
-    //     public ProductSerializer GetItem { get; set; }
-    // }
-
 }
 

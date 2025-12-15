@@ -1,5 +1,80 @@
-.kartica{
-    width: 18rem;
-    background-color: red;
-    margin: 10px;
+/* Glavni okvir - Ravan dizajn bez senke, sa okvirom */
+.product-cardd {
+  background-color: #fff;
+  border: 2px solid #e0e6ed; /* Svetlo sivi okvir inicijalno */
+  border-radius: 8px;        /* Manje zaobljenje, kockastiji izgled */
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
+
+/* Na hover, okvir postaje plav */
+.product-card:hover {
+  border-color: #0056b3;     /* Jaka plava boja okvira */
+  transform: translateY(-3px);
+}
+
+.card-link {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Slika odvojena linijom od teksta */
+.card-image-container {
+  width: 100%;
+  height: 220px;
+  background-color: #fff;
+  border-bottom: 2px solid #e0e6ed; /* Linija ispod slike */
+  padding: 15px; /* Slika ima malo "vazduha" oko sebe */
+  box-sizing: border-box;
+  transition: border-color 0.3s;
+}
+
+.product-card:hover .card-image-container {
+  border-bottom-color: #0056b3; /* I ova linija postaje plava na hover */
+}
+
+.card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Slika se cela vidi, ne seče se */
+}
+
+/* Sadržaj */
+.card-content {
+  padding: 20px;
+  text-align: center; /* Centriran tekst za ovaj stil */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Naslov */
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0;
+  text-transform: uppercase; /* Velika slova za moderniji izgled */
+  letter-spacing: 0.5px;
+}
+
+/* Info */
+.card-info {
+  font-size: 0.85rem;
+  color: #7f8c8d;
+  margin: 0;
+}
+
+/* Cena - Fokus tačka */
+.card-price {
+  font-size: 1.6rem;
+  color: #0056b3;
+  font-weight: 900;
+  margin: 10px 0;
+}
+
+/* Dugme - "Ghost" stil (samo okvir) */

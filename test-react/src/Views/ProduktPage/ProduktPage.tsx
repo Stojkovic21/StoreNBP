@@ -6,6 +6,7 @@ import productDto from "../../DTOs/ProductDto";
 import { axiosPrivate } from "../../api/axios";
 import Header from "../Header/Header";
 import CartDTO from "../../DTOs/CartDTO";
+import useShoppingCart from "../../hooks/useShoppingCart";
 type quantityType = {
   quantity: number;
 };
@@ -13,6 +14,8 @@ const ProductCard = () => {
   const param = useParams();
   const [product, setProduct] = useState<productDto>();
   const [kolicina, setKolicina] = useState<number>(0);
+  const {setQuantityIsChangedGlobal}=useShoppingCart();
+  // const {incCartQuanity,cartQuantity} = useShoppingCart();
   // Inicijalizacija sa definisanim tipom <OrderFormInputs>
   const {
     register,
@@ -43,7 +46,7 @@ const ProductCard = () => {
       };
       
       await axiosPrivate.post("/cart/new", cart);
-
+      setQuantityIsChangedGlobal();
     }else {console.log("Kolicina 0");
     }
     // console.log('TS Porudžbina:', {
@@ -61,13 +64,12 @@ const ProductCard = () => {
       <Header />
       <div className="product-container">
         <div className="product-card">
-          {/* LEVA STRANA - SLIKA */}
+          
           <div className="product-image-section">
             mesto za sliku
             {/* <img src={product.image} alt={product.name} className="product-img" /> */}
           </div>
 
-          {/* DESNA STRANA - DETALJI */}
           <div className="product-details-section">
             <h1 className="product-title">{product?.name}</h1>
 
@@ -77,32 +79,31 @@ const ProductCard = () => {
 
             <p className="product-description">{product?.description}</p>
 
-            {/* FORMA ZA PORUČIVANJE */}
             <form onSubmit={handleSubmit(onSubmit)} className="order-form">
               <div className="form-group">
                 <label htmlFor="quantity">Količina:</label>
                 <div className="kolicina">
                   <label
                     onClick={() =>
-                      setKolicina(kolicina >= 20 ? kolicina - 20 : 0)
+                      setKolicina(kolicina >= 1 ? kolicina - 1 : 0)
                     }
                   >
                     {" "}
-                    {"<"}{" "}
+                    {"-"}{" "}
                   </label>
                   <label>{kolicina}</label>
-                  <label onClick={() => setKolicina(kolicina + 20)}>
+                  <label onClick={() => setKolicina(kolicina + 1)}>
                     {" "}
-                    {">"}{" "}
+                    {"+"}{" "}
                   </label>
                 </div>
                 
-                  {/*<div className="redError">{kolicinaBez}</div>*/}
+                  {!kolicina&&<div className="redError">*Broj porudzbina ne moze biti 0</div>}
                 
               </div>
 
               <button type="submit" className="btn-order">
-                Poruči Proizvod
+                Dodaj u korpu
               </button>
             </form>
           </div>

@@ -35,7 +35,7 @@ function Polica() {
       try {
         const response = await axiosPrivate.get("/product/get/all");
         setItems(response.data);
-        console.log("Polica "+ response.data);
+        //console.log("Polica "+ response.data);
       } catch (err) {
       } finally {
       }

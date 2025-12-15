@@ -7,26 +7,33 @@ function Artikal(product: productDto) {
   
   return (
     <>
-    <div className="card shadow-lg rounded-2xl kartica">
-      <Link to={`/product/${product._id}`}>
-        <h2 className="card-titel">{product.name}</h2>
-        {/* <p className="text-gray-700">
-          Brend: <span className="font-semibold">{item.brend}</span>
-        </p> */}
-        <p className="text-gray-700">
-          Grama: <span className="font-semibold">{product.weight_g}g</span>
-        </p>
-        <p className="text-gray-700">
-          Cena: <span className="font-semibold">{product.price} RSD</span>
-        </p>
-        
-        <button
-          className={`mt-4 px-4 py-2 rounded-lg text-black "bg-blue-500 hover:bg-blue-600"`}
-        >
-          Dodaj u korpu
-        </button>
-      </Link>
+    <div className="product-cardd">
+  <Link to={`/product/${product._id}`} className="card-link">
+    
+    {/* Slika Proizvoda */}
+    <div className="card-image-container">
+      <img 
+        //src={product.image || "https://via.placeholder.com/300"} 
+        alt={product.name+" slika"} 
+        className="card-image" 
+      />
     </div>
+
+    {/* Sadržaj */}
+    <div className="card-content">
+      <h2 className="card-title">{product.name}</h2>
+      
+      <p className="card-info">
+        Gramaža: <span>{product.weight_g}g</span>
+      </p>
+      
+      <p className="card-price">
+        {product.price} RSD
+      </p>
+    </div>
+
+  </Link>
+</div>
     </>
   );
 }
