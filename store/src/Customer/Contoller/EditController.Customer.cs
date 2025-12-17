@@ -18,16 +18,17 @@ public class EditCustomerController : ControllerBase
     //[Authorize(Roles = "Admin,User")]
     [HttpPut]
     [Route("update")]
-    public async Task<ActionResult> EditCustomerAsync([FromBody] CustomerModel updateUser)
+    public async Task<ActionResult> EditCustomerAsync([FromBody] CustomerModel updateCustomer)
     {
         try
         {
-            var userRef = db.GetCollection<CustomerModel>("User");
-            var filter = Builders<CustomerModel>.Filter.Eq(f => f.Email, updateUser.Email);
-            var user = await userRef.Find(filter).FirstOrDefaultAsync();
-            if (Argon2.Verify(user.Password, updateUser.Password))
+            var customerRef = db.GetCollection<CustomerModel>("Customer");
+            var filter = Builders<CustomerModel>.Filter.Eq(f => f.Email, updateCustomer.Email);
+            var customer = await customerRef.Find(filter).FirstOrDefaultAsync();
+            // Console.WriteLine(customer);
+            if (Argon2.Verify(customer.Password, updateCustomer.Password))
             {
-                var result = await userRef.ReplaceOneAsync(filter, updateUser);
+                var result = await customerRef.ReplaceOneAsync(filter, updateCustomer);
                 if (result.ModifiedCount > 0)
                     return Ok("Item is successfully updated");
                 return BadRequest("Something went wrong");

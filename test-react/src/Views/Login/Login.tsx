@@ -30,9 +30,9 @@ function LoginPage() {
       })
       .then((response) => {
         handleSignIn(
-          response.data.accessToken,
-          response.data.userId,
-          response.data.role
+          response.data.AccessToken,
+          response.data.CustomerId,
+          response.data.Role
         );
         navigate("/");
         return response.status;

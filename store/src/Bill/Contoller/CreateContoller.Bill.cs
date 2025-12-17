@@ -12,12 +12,12 @@ namespace ProductController
         private readonly MongoClient client;
         private readonly IDriver driver;
         private readonly Neo4jQuery neo4JQuery;
-
+        private readonly IMongoDatabase db;
         public CreateBillController(IConfiguration configuration)
         {
             this.configuration = configuration;
             client = new MongoClient(Environment.GetEnvironmentVariable("MONGODB_URI"));
-
+            db = client.GetDatabase("Store");
             var uri = Environment.GetEnvironmentVariable("URI");
             var user = Environment.GetEnvironmentVariable("Username");
             var password = Environment.GetEnvironmentVariable("Password");
@@ -33,7 +33,7 @@ namespace ProductController
             try
             {
                 //if (bill.Name == "") return BadRequest("Unesite Naziv");
-                var billRef = client.GetDatabase("Store").GetCollection<BillModel>("Bill");
+                var billRef = db.GetCollection<BillModel>("Bill");
 
                 await billRef.InsertOneAsync(bill);
 

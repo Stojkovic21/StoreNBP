@@ -33,32 +33,32 @@ public class AuthCustomerController : ControllerBase
 
     [Route("signup")]
     [HttpPost]
-    public async Task<ActionResult> SignUp([FromBody] CustomerModel newUser)
+    public async Task<ActionResult> SignUp([FromBody] CustomerModel newCustomer)
     {
-        newUser.Password = Argon2.Hash(newUser.Password);
-        newUser.RefreshToken = GenerateRefreshToken();
-        newUser.RefreshTokenTimeExpire = DateTime.UtcNow.AddDays(7);
+        newCustomer.Password = Argon2.Hash(newCustomer.Password);
+        newCustomer.RefreshToken = GenerateRefreshToken();
+        newCustomer.RefreshTokenTimeExpire = DateTime.UtcNow.AddDays(7);
         try
         {
             await driver.VerifyConnectivityAsync();
             await using var session = driver.AsyncSession();
-            var userRef = db.GetCollection<CustomerModel>("User");
+            var customerRef = db.GetCollection<CustomerModel>("Customer");
 
-            var filter = Builders<CustomerModel>.Filter.Eq(f => f.Email, newUser.Email);
-            var isExsist = await userRef.Find<CustomerModel>(filter).FirstOrDefaultAsync();
+            var filter = Builders<CustomerModel>.Filter.Eq(f => f.Email, newCustomer.Email);
+            var isExsist = await customerRef.Find<CustomerModel>(filter).FirstOrDefaultAsync();
 
             if (isExsist is null)
             {
-                await userRef.InsertOneAsync(newUser);
+                await customerRef.InsertOneAsync(newCustomer);
                 var query = @"
                 CREATE(n:Customer {id:$id})";
                 var parameters = new Dictionary<string, object>
                 {
-                    {"id",newUser._id.ToString()},
+                    {"id",newCustomer._id.ToString()},
                 };
                 var result = await neo4JQuery.ExecuteWriteAsync(session, query, parameters);
 
-                return await TokenWorker(newUser);
+                return await TokenWorker(newCustomer);
             }
             else return Conflict("Email is allready taken");
         }
@@ -74,13 +74,14 @@ public class AuthCustomerController : ControllerBase
     {
         try
         {
-            var userRef = db.GetCollection<CustomerModel>("User");
+            var customerRef = db.GetCollection<CustomerModel>("Customer");
             var filter = Builders<CustomerModel>.Filter.Eq(f => f.Email, loginModel.Email);
-            var loginUser = await userRef.Find<CustomerModel>(filter).FirstOrDefaultAsync();
-            if (loginModel != null && Argon2.Verify(loginUser.Password, loginModel.Password))
+            var loginCustomer = await customerRef.Find<CustomerModel>(filter).FirstOrDefaultAsync();
+            if (loginModel != null && Argon2.Verify(loginCustomer.Password, loginModel.Password))
             {
-                var refreshToken = await GenerateAndSaveRefreshTokenAsync(loginModel);
-                return await TokenWorker(loginUser);
+                Console.WriteLine("Stari refresh token  " + loginCustomer.RefreshToken);
+                //var refreshToken = await GenerateAndSaveRefreshTokenAsync(loginModel);
+                return await TokenWorker(loginCustomer);
             }
             return BadRequest(new
             {
@@ -92,13 +93,13 @@ public class AuthCustomerController : ControllerBase
             throw;
         }
     }
-    private string CreateJWT(JwtModel user)
+    private string CreateJWT(JwtModel customer)
     {
         var claims = new List<Claim>
         {
-            new(ClaimTypes.NameIdentifier,user.sub),
-            new(ClaimTypes.Name,user.email),
-            new(ClaimTypes.Role,user.role)   //Sve sto treba da bude u jwt tokenu se smesta u Claim
+            new(ClaimTypes.NameIdentifier,customer.sub),
+            new(ClaimTypes.Name,customer.email),
+            new(ClaimTypes.Role,customer.role)   //Sve sto treba da bude u jwt tokenu se smesta u Claim
         };
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetValue<string>("AppSettings:Token")!));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
@@ -120,8 +121,9 @@ public class AuthCustomerController : ControllerBase
     private async Task<string> GenerateAndSaveRefreshTokenAsync(LoginModel loginData)
     {
         var refreshToken = GenerateRefreshToken();
-        var context = new EditCustomerController();
-        await context.EditCustomerAsync(new CustomerModel
+        Console.WriteLine("Novi refreshToken  " + refreshToken);
+        //var context = new EditCustomerController();
+        await UpdateRefreshTokenAsync(new CustomerModel
         {
             RefreshToken = refreshToken,
             RefreshTokenTimeExpire = DateTime.UtcNow.AddDays(7),
@@ -134,10 +136,10 @@ public class AuthCustomerController : ControllerBase
         });
         return refreshToken;
     }
-    private async Task<ActionResult> TokenWorker(CustomerModel user)
+    private async Task<ActionResult> TokenWorker(CustomerModel customer)
     {
-        var refreshToken = await GenerateAndSaveRefreshTokenAsync(new LoginModel(user.Email, user.Password));
-        Response.Cookies.Append("refreshToken", user.RefreshToken.ToString(), new CookieOptions
+        var refreshToken = await GenerateAndSaveRefreshTokenAsync(new LoginModel(customer.Email, customer.Password));
+        Response.Cookies.Append("refreshToken", refreshToken.ToString(), new CookieOptions
         {
             HttpOnly = true,
             Secure = true,
@@ -149,64 +151,84 @@ public class AuthCustomerController : ControllerBase
             {
                 AccessToken = CreateJWT(new JwtModel
                 {
-                    email = user.Email,
-                    sub = user._id.ToString(),
-                    role = user.Role
+                    email = customer.Email,
+                    sub = customer._id,
+                    role = customer.Role
                 }),
-                // UserId = int.Parse(newCustomer.Properties["id"].ToString()),
-                // Role = newCustomer.Properties["role"]?.ToString()
+                CustomerId = customer._id,
+                Role = customer.Role
             }
         );
     }
-    // [HttpGet]
-    // [Route("refresh-token")]
-    // public async Task<ActionResult> ValidateRefreshTokenAsync()
-    // {
-    //     string refreshToken = Request.Cookies["refreshToken"];
-    //     Console.WriteLine(refreshToken);
-    //     try
-    //     {
-    //         await driver.VerifyConnectivityAsync();
-    //         await using var session = driver.AsyncSession();
+    [HttpGet]
+    [Route("refresh-token")]
+    public async Task<ActionResult> ValidateRefreshTokenAsync()
+    {
+        string refreshToken = Request.Cookies["refreshToken"];
+        //Console.WriteLine(refreshToken);
+        try
+        {
+            var customerRef = db.GetCollection<CustomerModel>("Customer");
+            var filter = Builders<CustomerModel>.Filter.Eq(f => f.RefreshToken, refreshToken);
+            var result = await customerRef.Find(filter).FirstOrDefaultAsync();
+            if (result is not null)
+            {
+                var dateNow = DateTime.UtcNow.ToLocalTime();
+                var dateParse = DateTime.Parse(result.RefreshTokenTimeExpire.ToString()).ToLocalTime();
+                if (dateNow < dateParse)
+                {
+                    var newRefreshToken = await GenerateAndSaveRefreshTokenAsync(new LoginModel(result.Email, result.Password));
+                    Response.Cookies.Append("refreshToken", newRefreshToken.ToString(), new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.Strict,
+                        Expires = DateTimeOffset.UtcNow.AddDays(7)
+                    });
+                    return Ok(new ResponseTokenModel
+                    {
+                        AccessToken = CreateJWT(new JwtModel
+                        {
+                            email = result.Email,
+                            sub = result._id,
+                            role = result.Role
+                        }),
+                        CustomerId = result._id,
+                        Role = result.Role,
+                    });
+                }
+            }
+            return BadRequest("Refresh tokeh has expire!"); //ponovno logovanje
+        }
+        catch (Exception ex)
+        {
+            return NotFound(ex);
+        }
+    }
+    private async Task<ActionResult> UpdateRefreshTokenAsync(CustomerModel updateCustomer)
+    {
+        try
+        {
+            var customerRef = db.GetCollection<CustomerModel>("Customer");
 
-    //         var query = neo4JQuery.QueryByOneElement(CUSTOMER, "refreshToken", "refreshToken", RETURN);
-    //         var parameters = new Dictionary<string, object>
-    //         {
-    //             {"refreshToken",refreshToken}
-    //         };
-    //         var result = await neo4JQuery.ExecuteReadAsync(session, query, parameters);
-    //         Console.WriteLine(result.Properties["ime"]);
-    //         var dateNow = DateTime.UtcNow.ToLocalTime();
-    //         var dateParse = DateTime.Parse(result.Properties["RTTimeExpire"].ToString()).ToLocalTime();
-    //         if (result is not null && dateNow < dateParse)
-    //         {
-    //             var newRefreshToken = await GenerateAndSaveRefreshTokenAsync(new LoginModel(result.Properties["email"].ToString(), result.Properties["password"].ToString()));
-    //             Response.Cookies.Append("refreshToken", newRefreshToken.ToString(), new CookieOptions
-    //             {
-    //                 HttpOnly = true,
-    //                 Secure = true,
-    //                 SameSite = SameSiteMode.Strict,
-    //                 Expires = DateTimeOffset.UtcNow.AddDays(7)
-    //             });
-    //             return Ok(new ResponseTokenModel
-    //             {
-    //                 AccessToken = CreateJWT(new JwtModel
-    //                 {
-    //                     Email = result.Properties["email"]?.ToString(),
-    //                     UserId = result.Properties["id"]?.ToString(),
-    //                     Role = result.Properties["role"]?.ToString()
-    //                 }),
-    //                 UserId = int.Parse(result.Properties["id"]?.ToString()),
-    //                 Role = result.Properties["role"]?.ToString(),
-    //             });
-    //         }
-    //         return BadRequest("Refresh tokeh has expire!"); //ponovno logovanje
-    //     }
-    //     catch (Exception ex)
-    //     {
-    //         return NotFound(new { message = "False", error = ex });
-    //     }
-    // }
+            var update = Builders<CustomerModel>.Update
+                .Set(x => x.RefreshToken, updateCustomer.RefreshToken)
+                .Set(x => x.RefreshTokenTimeExpire, updateCustomer.RefreshTokenTimeExpire);
+
+            var result = await customerRef.UpdateOneAsync(
+                x => x.Email == updateCustomer.Email,
+                update
+            );
+            if (result.ModifiedCount > 0)
+                return Ok("Item is successfully updated");
+            return BadRequest("Something went wrong");
+
+        }
+        catch (System.Exception ex)
+        {
+            return NotFound(ex);
+        }
+    }
     [HttpGet]
     [Route("signout")]
     public void CustomerSignOut()

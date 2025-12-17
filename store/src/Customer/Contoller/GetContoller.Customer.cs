@@ -10,12 +10,10 @@ using Neo4j.Driver;
 [Route("customer")]
 public class GetCustomerController : ControllerBase
 {
-    private readonly IConfiguration configuration;
     private readonly MongoClient client;
     private readonly IMongoDatabase db;
-    public GetCustomerController(IConfiguration configuration)
+    public GetCustomerController()
     {
-        this.configuration = configuration;
         client = new MongoClient(Environment.GetEnvironmentVariable("MONGODB_URI"));
         db = client.GetDatabase("Store");
     }
@@ -41,10 +39,10 @@ public class GetCustomerController : ControllerBase
     {
         try
         {
-            var userRef = db.GetCollection<CustomerModel>("User");
+            var customerRef = db.GetCollection<CustomerModel>("Customer");
             var filter = Builders<CustomerModel>.Filter.Eq(f => f._id, id);
-            var user = await userRef.Find(filter).FirstOrDefaultAsync();
-            return Ok(user);
+            var customer = await customerRef.Find(filter).FirstOrDefaultAsync();
+            return Ok(customer);
         }
         catch (Exception ex)
         {

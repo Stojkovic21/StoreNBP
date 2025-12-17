@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import "../style/Card.css";
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 import customerDto from "../../DTOs/CustomerDto";
 import Header from "../Header/Header";
 import axios from "../../api/axios";
@@ -8,18 +8,17 @@ import { useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 
 function SignUp() {
-  const [customes, setCustomers] = useState<customerDto[]>([]);
   const navigate = useNavigate();
   const {handleSignIn}=useAuth();
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const result = await axios.get("/customer/get/all");
-        setCustomers(result.data.customer);
-      } catch (error) {}
-    };
-    fetchUser();
-  }, []);
+  // useEffect(() => {
+  //   const fetchUser = async () => {
+  //     try {
+  //       const result = await axios.get("/customer/get/all");
+  //       setCustomers(result.data.customer);
+  //     } catch (error) {}
+  //   };
+  //   fetchUser();
+  // }, []);
 
   const {
     register,
@@ -28,7 +27,7 @@ function SignUp() {
   } = useForm<customerDto>({mode:"onBlur"});
 
   const onSubmit = async (data: customerDto) => {
-    data.role = "User";
+    data.role = "Customer";
     console.log("Data ", data);
     await axios.post("/customer/signup", data,{
         withCredentials: true,
@@ -113,11 +112,11 @@ function SignUp() {
                 className="form-control"
                 {...register("password", {
                   required: "Password is required",
-                  pattern: {
-                    value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
-                    message:
-                      "Password must be at least 8 characters long and include at least one big letter and number",
-                  },
+                  // pattern: {
+                  //   value: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
+                  //   message:
+                  //     "Password must be at least 8 characters long and include at least one big letter and number",
+                  //},
                 })}
               />
               {errors.password && (

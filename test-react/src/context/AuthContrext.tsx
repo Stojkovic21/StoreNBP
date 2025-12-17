@@ -7,9 +7,9 @@ const AuthProviderContext = createContext<AuthProviderContextValue | undefined>(
 export type AuthProviderContextValue = {
   isAuthenticated: boolean;
   accessToken?: string | null;
-  userId?: number | null;
+  customerId?: string | null;
   role: string;
-  handleSignIn: (accessToken: string, userId: number, role: string) => void;
+  handleSignIn: (accessToken: string, customerId: string, role: string) => void;
   handleSignOut: () => void;
 };
 
@@ -21,20 +21,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
     null
   );
   const [role, setRole] = useState("Guest");
-  const [userId, setUserID] = useState<number | null | undefined>();
+  const [customerId, setCustomerID] = useState<string | null | undefined>();
 
-  function handleSignIn(accessToken: string, userId: number, role: string) {
+  function handleSignIn(accessToken: string, customerId: string, role: string) {
     setIsAuthenticated(true);
     setAccessToken(accessToken);
     setRole(role);
-    setUserID(userId);
+    setCustomerID(customerId);
   }
 
   function handleSignOut() {
     setIsAuthenticated(false);
     setAccessToken(null);
     setRole("Guest");
-    setUserID(null);
+    setCustomerID(null);
   }
 
   return (
@@ -45,7 +45,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         handleSignIn,
         handleSignOut,
         role,
-        userId,
+        customerId,
       }}
     >
       {children}
