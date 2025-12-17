@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
 import "../style/Card.css";
-// import { useEffect, useState } from "react";
 import customerDto from "../../DTOs/CustomerDto";
 import Header from "../Header/Header";
 import axios from "../../api/axios";
@@ -10,16 +9,6 @@ import useAuth from "../../hooks/useAuth";
 function SignUp() {
   const navigate = useNavigate();
   const {handleSignIn}=useAuth();
-  // useEffect(() => {
-  //   const fetchUser = async () => {
-  //     try {
-  //       const result = await axios.get("/customer/get/all");
-  //       setCustomers(result.data.customer);
-  //     } catch (error) {}
-  //   };
-  //   fetchUser();
-  // }, []);
-
   const {
     register,
     handleSubmit,

@@ -3,29 +3,6 @@ import Artikal from "../Artikal/Artikal";
 import "./Polica.css";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import { useEffect, useState } from "react";
-//nisam siguran sto sam ga napravio ali neka ga mozda skuzim
-// let id:string="0";
-// const fetchData=async()=>{
-//   try {
-//     const response = await axios.get(`http://localhost:5057/item/get/id:${id}`);
-//     console.log(response.data.item);
-//   } catch (error) {
-//     console.log(error);
-//   }
-// }
-
-// useEffect(() => {
-//   const fetchItems = async () => {
-//     try {
-//       const response = await axios.get("http://localhost:5057/Item/Get/all");
-//       setItems(response.data);
-//     } catch (err) {
-//     } finally {
-//     }
-//   };
-
-//   fetchItems();
-// }, []);
 
 function Polica() {
   const [items, setItems] = useState<productDto[]>([]);
@@ -35,7 +12,6 @@ function Polica() {
       try {
         const response = await axiosPrivate.get("/product/get/all");
         setItems(response.data);
-        //console.log("Polica "+ response.data);
       } catch (err) {
       } finally {
       }
@@ -44,7 +20,6 @@ function Polica() {
     fetchItems();
   }, []);
 
-  // items: itemModul[] = [item1, item];
   return (
     <>
       <div className="polica">
@@ -52,8 +27,6 @@ function Polica() {
           ? items.map((item) => <Artikal key={item._id} {...item} />)
           : null}
       </div>
-
-      {/*<button onClick={fetchData}> dugme </button>*/}
     </>
   );
 }

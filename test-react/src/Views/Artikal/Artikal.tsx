@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import productDto from "../../DTOs/ProductDto";
 import "./Artikal.css";
-import { axiosPrivate } from "../../api/axios";
 
 function Artikal(product: productDto) {
   

@@ -1,28 +1,14 @@
 //import { FormEvent, useCallback, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import "./AddProduct.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import productDTo from "../../DTOs/ProductDto";
 import "../style/Card.css";
 import Header from "../Header/Header";
-import RelationshipDTO from "../../DTOs/RelationshipDTO";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
-import { Link } from "react-router-dom";
 
 function AddProduct() {
-  const [product, setProduct] = useState<productDTo[]>([]);
   const axiosPrivate = useAxiosPrivate();
-  // useEffect(() => {
-  //   const fetchItems = async () => {
-  //     try {
-  //       const responseItem = await axiosPrivate.get("/product/get/all");
-  //       setProduct(responseItem.data.items);
-  //     } catch (err) {
-  //     } finally {
-  //     }
-  //   };
-  //   fetchItems();
-  // }, []);
 
   const {
     register,
@@ -35,12 +21,6 @@ function AddProduct() {
 
   const onSubmit: SubmitHandler<productDTo> = async (data) => {
     await axiosPrivate.post("/product/add", data);
-    //await new Promise((resolve) => setTimeout(resolve, 1000));
-    //    await axiosPrivate.post("/relationship/supplier/connect", brendConnection);
-    // await axiosPrivate.post(
-    //   "/relationship/category/connect",
-    //   categoryConnection
-    // );
     //window.location.reload();
   };
 

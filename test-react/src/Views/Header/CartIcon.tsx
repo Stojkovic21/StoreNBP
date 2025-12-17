@@ -1,12 +1,11 @@
 import useShoppingCart from "../../hooks/useShoppingCart";
 import "./Header.css";
 export default function Card() {
-  // let cartQuantity = 0;
   const { openCart,cartQuantity } = useShoppingCart();
   return (
     <>
       {
-        //cartQuantity > 0 &&
+        (cartQuantity > 0 &&
         <button onClick={openCart} className="rounded-circle card-button">
           <svg
             width="40px"
@@ -46,7 +45,7 @@ export default function Card() {
             {cartQuantity}
           </div>
         </button>
-        /*)*/
+        )
       }
     </>
   );

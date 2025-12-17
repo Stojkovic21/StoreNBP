@@ -15,12 +15,8 @@ const ProductCard = () => {
   const [product, setProduct] = useState<productDto>();
   const [kolicina, setKolicina] = useState<number>(0);
   const {setQuantityIsChangedGlobal}=useShoppingCart();
-  // const {incCartQuanity,cartQuantity} = useShoppingCart();
-  // Inicijalizacija sa definisanim tipom <OrderFormInputs>
   const {
-    register,
     handleSubmit,
-    formState: { errors },
   } = useForm<quantityType>();
 
   useEffect(() => {
@@ -29,13 +25,11 @@ const ProductCard = () => {
         `/product/get/id:${param.productid}`
       );
       setProduct(response.data);
-      //console.log(response.data);
     };
     fetchItems();
   },[]);
 
-  // Handler za submit
-  const onSubmit: SubmitHandler<quantityType> = async (data) => {
+  const onSubmit: SubmitHandler<quantityType> = async () => {
     if(kolicina!==0)
     {
       const cart: CartDTO = {
