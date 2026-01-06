@@ -13,7 +13,7 @@ type quantityType = {
 const ProductCard = () => {
   const param = useParams();
   const [product, setProduct] = useState<productDto>();
-  const [kolicina, setKolicina] = useState<number>(0);
+  const [kolicina, setKolicina] = useState<number>(1);
   const {setQuantityIsChangedGlobal}=useShoppingCart();
   const {
     handleSubmit,
@@ -68,7 +68,7 @@ const ProductCard = () => {
             <h1 className="product-title">{product?.name}</h1>
 
             <p className="product-price">
-              {product?.price.toLocaleString()} {"RDS"}
+              {product?.price.toLocaleString()} {"RSD"}
             </p>
 
             <p className="product-description">{product?.description}</p>

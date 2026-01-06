@@ -5,7 +5,7 @@ export default function Card() {
   return (
     <>
       {
-        (cartQuantity > 0 &&
+        
         <button onClick={openCart} className="rounded-circle card-button">
           <svg
             width="40px"
@@ -45,7 +45,7 @@ export default function Card() {
             {cartQuantity}
           </div>
         </button>
-        )
+        
       }
     </>
   );

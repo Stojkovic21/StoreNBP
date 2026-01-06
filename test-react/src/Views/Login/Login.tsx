@@ -22,7 +22,7 @@ function LoginPage() {
   useEffect(() => {
     refresh();
     isAuthenticated ? navigate("/") : null;
-  }, []);
+  }, [isAuthenticated]);
   const onSubmit: SubmitHandler<LoginDTO> = async (data) => {
     axios
       .post("/customer/login", data, {

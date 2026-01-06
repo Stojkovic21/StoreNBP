@@ -1,5 +1,6 @@
 import axios from "../../api/axios";
 import useShoppingCart from "../../hooks/useShoppingCart";
+import ItemCartPresent from "./ItemCartPresent";
 import "./ShopingCart.css";
 import { useEffect, useState } from "react";
 type ShoppingCartProps = {
@@ -12,15 +13,15 @@ type CartItem = {
   quantity: number;
 };
 function ShoppingCart({ isOpen }: ShoppingCartProps) {
-   const { closeCart, incCartQuantity,decCartQuantity,quantityIsChanged,setQuantityIsChangedGlobal} =useShoppingCart();
+   const { closeCart, incCartQuantity,quantityIsChanged} =useShoppingCart();
 
   const [separateItems, setSeparateItem] = useState<CartItem[]>([]);
   const [currItems, setCurrItem] = useState<CartItem[]>([]);
-  const [onBoardQuantity,setOnBoardQuantity]=useState<number>(0);
+  const [totalValue,setTotalValue]=useState<number>(0);
   useEffect(() => {
     const itemsInCart = async () => {
       try {
-        const results = await axios.get("/cart/get");
+        const results = await axios.get("/cart/get",{withCredentials: true});
         setCurrItem(results.data);
       } catch (error) {}
     };
@@ -30,21 +31,16 @@ function ShoppingCart({ isOpen }: ShoppingCartProps) {
 
   useEffect(() => {
     const pomNiz = [];
+    let value=0;
     for (var item in currItems) {
       pomNiz.push(currItems[item]);
       incCartQuantity();
-      
+      value+=currItems[item].price*currItems[item].quantity;
     }
+    setTotalValue(value);
     setSeparateItem(pomNiz);
   }, [currItems]);
-
-  async function deleteFromCart(id: string)
-  {
-    await axios.delete(`/cart/remove/${id}`);
-    decCartQuantity();
-    setQuantityIsChangedGlobal();
-  }
-
+ 
   return (
     <>
       <div className={`cart-drawer ${isOpen ? "open" : ""}`}>
@@ -64,38 +60,14 @@ function ShoppingCart({ isOpen }: ShoppingCartProps) {
             {separateItems.length === 0 ? (
               <p className="empty">Cart is empty.</p>
             ) : (
-              separateItems.map((product, i) => (
-                <div key={i} className="cart-item">
-                  <div>
-                    <strong>{product.name}</strong>
-                    <div className="cart-item">
-                      <label className="minusplus" onClick={async ()=>{await axios.patch(`cart/inc/${product.id}/${-1}`);setOnBoardQuantity(onBoardQuantity-1);product.quantity--;
-                      }}>
-                        {"- "}
-                      </label>
-                      <label onMouseEnter={()=>{setOnBoardQuantity(product.quantity);}}>
-                        {onBoardQuantity} {/*onBoardQuantity kao improvizacija za vizualni priklaz trenutne kolicine porucenig produkta */}
-                      </label>
-                      <label className="minusplus" onClick={async ()=>{await axios.patch(`cart/inc/${product.id}/${1}`);setOnBoardQuantity(onBoardQuantity+1);product.quantity++
-                      }}>
-                        {' +'}
-                      </label>
-                    </div>
-                  </div>
-                  <div className="cart-item">
-                    {product.quantity * product.price} din.
-                  </div>
-                  <div className="close-button" onClick={()=>{deleteFromCart(product.id);
-                  }}>
-                    x
-                  </div>
-                </div>
-              ))
+              separateItems.map((product, i) => 
+                 <ItemCartPresent key={i} {...product}/>
+              )
             )}
           </div>
 
           <div className="cart-footer">
-            <strong>Total:</strong> {1312} din.
+            <strong>Total:</strong> {totalValue} din.
             <button className="checkout-button" onClick={() => console.log("")}>
               Checkout
             </button>

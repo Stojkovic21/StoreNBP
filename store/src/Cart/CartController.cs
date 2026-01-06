@@ -17,9 +17,9 @@ public class CartController : ControllerBase
         muxer = ConnectionMultiplexer.Connect(
             new ConfigurationOptions
             {
-                EndPoints = { { "redis-11028.crce198.eu-central-1-3.ec2.cloud.redislabs.com", 11028 } },
+                EndPoints = { { "redis-17361.c293.eu-central-1-1.ec2.cloud.redislabs.com", 17361 } },
                 User = "default",
-                Password = "IG50rIFucHcmYkBHNJOaDE8CAzYWLUJI",
+                Password = "L95TqI1CiBLhUKKNLt6cIvr7NtP6OF6d",
                 AbortOnConnectFail = false,
             }
         );
@@ -33,7 +33,7 @@ public class CartController : ControllerBase
         {
             JsonCommands json = db.JSON();
             var key = "Product " + cartProduct.Id;
-            string customer = "Customer";
+            string customer = Request.Cookies["customerID"];
             var product = new Dictionary<string, object>
             {
                 {"Id",cartProduct.Id},
@@ -57,10 +57,11 @@ public class CartController : ControllerBase
     [Route("inc/{productId}/{inc}")]
     public ActionResult IncrementCounter(string productId, string inc)
     {
+        string customer = Request.Cookies["customerID"];
         try
         {
             JsonCommands json = db.JSON();
-            json.NumIncrby("Customer", $"$.{productId}.Quantity", double.Parse(inc));
+            json.NumIncrby(customer, $"$.{productId}.Quantity", double.Parse(inc));
 
             return Ok("Increment successfully");
         }
@@ -73,10 +74,11 @@ public class CartController : ControllerBase
     [Route("remove/{id}")]
     public ActionResult RemoveItemFromCart(string id)
     {
+        string customer = Request.Cookies["customerID"];
         try
         {
             JsonCommands json = db.JSON();
-            json.Del("Customer", $"$.{id}");
+            json.Del(customer, $"$.{id}");
             return Ok("Product is removed successfully");
         }
         catch (System.Exception)
@@ -88,14 +90,16 @@ public class CartController : ControllerBase
     [Route("get")]
     public ActionResult GetAllItemsFromCurt()
     {
+        string customer = Request.Cookies["customerID"];
         try
         {
             var db = muxer.GetDatabase();
             var json = db.JSON();
-            if (db.KeyExists("Customer"))
+
+            if (db.KeyExists(customer))
             {
 
-                var products = json.Get<Dictionary<string, CartModel>>("Customer");
+                var products = json.Get<Dictionary<string, CartModel>>(customer);
 
                 return Ok(products);
             }
@@ -110,12 +114,13 @@ public class CartController : ControllerBase
     [Route("get/{id}")]
     public ActionResult GetItemById(string id)
     {
+        string customer = Request.Cookies["customerID"];
         try
         {
             var json = db.JSON();
-            if (db.KeyExists("Customer"))
+            if (db.KeyExists(customer))
             {
-                var result = json.Get<CartModel>("Customer", $"$.{id}");
+                var result = json.Get<CartModel>(customer, $"$.{id}");
                 return Ok(result);
             }
             return BadRequest("Item does not exist");

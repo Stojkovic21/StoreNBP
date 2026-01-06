@@ -4,7 +4,6 @@ interface productDto
     name: string
     price: number
     weight_g: string
-    with: string[]
     description: string
 }
 

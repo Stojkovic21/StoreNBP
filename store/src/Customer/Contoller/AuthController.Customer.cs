@@ -138,14 +138,17 @@ public class AuthCustomerController : ControllerBase
     }
     private async Task<ActionResult> TokenWorker(CustomerModel customer)
     {
-        var refreshToken = await GenerateAndSaveRefreshTokenAsync(new LoginModel(customer.Email, customer.Password));
-        Response.Cookies.Append("refreshToken", refreshToken.ToString(), new CookieOptions
+        var options = new CookieOptions
         {
             HttpOnly = true,
             Secure = true,
-            SameSite = SameSiteMode.Strict,
+            SameSite = SameSiteMode.None,
             Expires = DateTimeOffset.UtcNow.AddDays(7)
-        });
+        };
+        var refreshToken = await GenerateAndSaveRefreshTokenAsync(new LoginModel(customer.Email, customer.Password));
+        Response.Cookies.Append("refreshToken", refreshToken.ToString(), options);
+        Response.Cookies.Append("customerID", customer._id.ToString(), options);
+
         return Ok(
             new ResponseTokenModel
             {
@@ -165,7 +168,6 @@ public class AuthCustomerController : ControllerBase
     public async Task<ActionResult> ValidateRefreshTokenAsync()
     {
         string refreshToken = Request.Cookies["refreshToken"];
-        //Console.WriteLine(refreshToken);
         try
         {
             var customerRef = db.GetCollection<CustomerModel>("Customer");
@@ -177,25 +179,18 @@ public class AuthCustomerController : ControllerBase
                 var dateParse = DateTime.Parse(result.RefreshTokenTimeExpire.ToString()).ToLocalTime();
                 if (dateNow < dateParse)
                 {
-                    var newRefreshToken = await GenerateAndSaveRefreshTokenAsync(new LoginModel(result.Email, result.Password));
-                    Response.Cookies.Append("refreshToken", newRefreshToken.ToString(), new CookieOptions
-                    {
-                        HttpOnly = true,
-                        Secure = true,
-                        SameSite = SameSiteMode.Strict,
-                        Expires = DateTimeOffset.UtcNow.AddDays(7)
-                    });
-                    return Ok(new ResponseTokenModel
-                    {
-                        AccessToken = CreateJWT(new JwtModel
+                    return Ok(
+                        new ResponseTokenModel
                         {
-                            email = result.Email,
-                            sub = result._id,
-                            role = result.Role
-                        }),
-                        CustomerId = result._id,
-                        Role = result.Role,
-                    });
+                            AccessToken = CreateJWT(new JwtModel
+                            {
+                                email = result.Email,
+                                sub = result._id,
+                                role = result.Role
+                            }),
+                            CustomerId = result._id,
+                            Role = result.Role
+                        });
                 }
             }
             return BadRequest("Refresh tokeh has expire!"); //ponovno logovanje
