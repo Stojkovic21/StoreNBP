@@ -3,7 +3,8 @@ import "./Header.css";
 import "../style/Visibility.css";
 import useAuth from "../../hooks/useAuth";
 import axios from "../../api/axios";
-import Card from "./CartIcon";
+import Cart from "./CartIcon";
+import Profile from "./ProfileIcon";
 export default function main() {
   const { isAuthenticated, handleSignOut } = useAuth();
   return (
@@ -36,7 +37,10 @@ export default function main() {
             </>
           )}
         </nav>
-        <Card />
+        <>
+        <Profile/>
+        <Cart />
+        </>
       </header>
     </>
   );

@@ -21,7 +21,7 @@ function AddProduct() {
 
   const onSubmit: SubmitHandler<productDTo> = async (data) => {
     await axiosPrivate.post("/product/add", data);
-    //window.location.reload();
+    window.location.reload();
   };
 
   return (

@@ -13,8 +13,7 @@ type CartItem = {
   quantity: number;
 };
 function ShoppingCart({ isOpen }: ShoppingCartProps) {
-   const { closeCart, incCartQuantity,quantityIsChanged} =useShoppingCart();
-
+  const {closeCart, incCartQuantity,quantityIsChanged} =useShoppingCart();
   const [separateItems, setSeparateItem] = useState<CartItem[]>([]);
   const [currItems, setCurrItem] = useState<CartItem[]>([]);
   const [totalValue,setTotalValue]=useState<number>(0);
@@ -40,7 +39,13 @@ function ShoppingCart({ isOpen }: ShoppingCartProps) {
     setTotalValue(value);
     setSeparateItem(pomNiz);
   }, [currItems]);
- 
+
+  function checkOut(){
+    currItems.map((item)=>{
+      
+    })
+    
+  };
   return (
     <>
       <div className={`cart-drawer ${isOpen ? "open" : ""}`}>
@@ -55,7 +60,7 @@ function ShoppingCart({ isOpen }: ShoppingCartProps) {
             ×
           </button>
         </div>
-        <form>
+        <div>
           <div className="cart-items">
             {separateItems.length === 0 ? (
               <p className="empty">Cart is empty.</p>
@@ -68,11 +73,11 @@ function ShoppingCart({ isOpen }: ShoppingCartProps) {
 
           <div className="cart-footer">
             <strong>Total:</strong> {totalValue} din.
-            <button className="checkout-button" onClick={() => console.log("")}>
+            <button className="checkout-button" onClick={() => checkOut()}>
               Checkout
             </button>
           </div>
-        </form>
+        </div>
       </div>
 
       {isOpen && <div className="overlay" onClick={() => closeCart()} />}

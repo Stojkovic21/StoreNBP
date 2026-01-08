@@ -229,12 +229,15 @@ public class AuthCustomerController : ControllerBase
     public void CustomerSignOut()
     {
         string newRefreshToken = "";
-        Response.Cookies.Append("refreshToken", newRefreshToken, new CookieOptions
+        string customer = "";
+        var option = new CookieOptions
         {
             HttpOnly = true,
             Secure = true,
             SameSite = SameSiteMode.Strict,
             Expires = DateTimeOffset.UtcNow.AddDays(7)
-        });
+        };
+        Response.Cookies.Append("refreshToken", newRefreshToken, option);
+        Response.Cookies.Append("customerID", customer, option);
     }
 }

@@ -7,6 +7,7 @@ import AddProduct from "./Views/AddProduct/AddProduct";
 import { AuthProvider } from "./context/AuthContrext";
 import { ShoppingCardProvider } from "./context/ShoppingCartContext";
 import ProductCard from "./Views/ProduktPage/ProduktPage";
+import ProfilePage from "./Views/ProfilaPage/ProfilePage";
 
 const router = createBrowserRouter([
   //razlika izmedju link i a je sto a refresuje ceo html i js a link samo prosledi na tu stranicu
@@ -35,11 +36,11 @@ const router = createBrowserRouter([
     element: <AddProduct />,
     errorElement: <div>404 not found</div>,
   },
-  //profiles
-  // {
-  //   path:'profiles/:profileId',
-  //   element: <ProfilePage>>
-  // }
+  {
+    path:'profile/',
+    element: <ProfilePage />,
+    errorElement: <div>404 not found</div>,
+  }
 ]);
 
 function App() {

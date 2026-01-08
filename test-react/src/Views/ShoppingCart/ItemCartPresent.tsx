@@ -15,7 +15,7 @@ export default function ItemCartPresent(product: CartItem) {
   );
   const { decCartQuantity, setQuantityIsChangedGlobal } = useShoppingCart();
   async function deleteFromCart() {
-    await axios.delete(`/cart/remove/${product.id}`);
+    await axios.delete(`/cart/remove/${product.id}`,{withCredentials:true});
     decCartQuantity();
     setQuantityIsChangedGlobal();
   }
@@ -29,7 +29,7 @@ export default function ItemCartPresent(product: CartItem) {
               className="minusplus"
               onClick={async () => {
                 if (product.quantity > 0) {
-                  await axios.patch(`cart/inc/${product.id}/${-1}`);
+                  await axios.patch(`cart/inc/${product.id}/${-1}`,null,{withCredentials:true});
                   setOnBoardQuantity(onBoardQuantity - 1);
                 }
               }}

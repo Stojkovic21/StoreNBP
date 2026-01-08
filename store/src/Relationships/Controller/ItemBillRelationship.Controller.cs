@@ -7,7 +7,7 @@ public class ItemBillRelationship : ControllerBase
 {
     private readonly IDriver driver;
     private readonly Relationsip createRelationship;
-    public ItemBillRelationship(IConfiguration configuration)
+    public ItemBillRelationship()
     {
         var uri = Environment.GetEnvironmentVariable("URI");
         var user = Environment.GetEnvironmentVariable("Username");

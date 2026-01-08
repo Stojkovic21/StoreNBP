@@ -10,10 +10,9 @@ const useRefreshToken = () => {
     });
     handleSignIn(
       response.data.accessToken,
-      response.data.userId,
+      response.data.customerId,
       response.data.role
     );
-
     return response.data.accessToken;
   };
   return refresh;

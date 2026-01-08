@@ -20,21 +20,20 @@ public class EditCustomerController : ControllerBase
     [Route("update")]
     public async Task<ActionResult> EditCustomerAsync([FromBody] CustomerModel updateCustomer)
     {
+        var userID = Request.Cookies["customerID"];
         try
         {
             var customerRef = db.GetCollection<CustomerModel>("Customer");
-            var filter = Builders<CustomerModel>.Filter.Eq(f => f.Email, updateCustomer.Email);
+            var filter = Builders<CustomerModel>.Filter.Eq(f => f._id, userID);
             var customer = await customerRef.Find(filter).FirstOrDefaultAsync();
-            // Console.WriteLine(customer);
-            if (Argon2.Verify(customer.Password, updateCustomer.Password))
-            {
-                var result = await customerRef.ReplaceOneAsync(filter, updateCustomer);
-                if (result.ModifiedCount > 0)
-                    return Ok("Item is successfully updated");
-                return BadRequest("Something went wrong");
-            }
-            else { return BadRequest("Enter correct password"); }
 
+            customer.Name = updateCustomer.Name;
+            customer.LastName = updateCustomer.LastName;
+            customer.PhoneNumber = updateCustomer.PhoneNumber;
+            var result = await customerRef.ReplaceOneAsync(filter, customer);
+            if (result.ModifiedCount > 0)
+                return Ok("Item is successfully updated");
+            return BadRequest("Something went wrong");
         }
         catch (System.Exception ex)
         {

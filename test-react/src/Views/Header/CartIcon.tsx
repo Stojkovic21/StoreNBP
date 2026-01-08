@@ -5,7 +5,6 @@ export default function Card() {
   return (
     <>
       {
-        
         <button onClick={openCart} className="rounded-circle card-button">
           <svg
             width="40px"

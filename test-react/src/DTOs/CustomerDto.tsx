@@ -1,9 +1,9 @@
 interface customerDto
 {
-    id:number,
+    id:string,
     password: string,
     name:string,
-    lastname:string,
+    lastName:string,
     phoneNumber:string,
     email:string,
     role:string

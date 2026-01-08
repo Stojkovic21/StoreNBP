@@ -71,8 +71,8 @@ function SignUp() {
                   message:"The lastname has to have least than 5 letters"
                 } })}
               />
-              {errors.lastname && (
-                <span id="lastname-error-msg" className="text-danger">*{errors.lastname?.message}</span>
+              {errors.lastName && (
+                <span id="lastname-error-msg" className="text-danger">*{errors.lastName?.message}</span>
               )}
             </div>
             <div className="mb-3">
