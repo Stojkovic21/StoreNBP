@@ -19,6 +19,7 @@ function ShoppingCart({ isOpen }: ShoppingCartProps) {
   const [currItems, setCurrItem] = useState<CartItem[]>([]);
   const [totalValue, setTotalValue] = useState<number>(0);
   const [showPopup, setShowPopup] = useState(false);
+  const [isCheckout, setIsCheckout]= useState(false);
   useEffect(() => {
     const itemsInCart = async () => {
       try {
@@ -44,6 +45,7 @@ function ShoppingCart({ isOpen }: ShoppingCartProps) {
   async function checkOut() {
     // kad chackoutuje treba da izadje popup window sa kompletnom porudzbinom i poljem za unos notes-a
     // ovo ako stignem i imam vreme
+    setIsCheckout(false);
     const Orders = [];
     for (var item in currItems) {
       Orders.push(currItems[item]);
@@ -57,6 +59,9 @@ function ShoppingCart({ isOpen }: ShoppingCartProps) {
       )
       .then((response) => {
         if (response.status === 200) {
+          setIsCheckout(true);
+          closeCart();
+          axios.delete("/cart/remove/all");
           setShowPopup(true);
           setTimeout(() => setShowPopup(false), 2000);
         }
@@ -90,8 +95,8 @@ function ShoppingCart({ isOpen }: ShoppingCartProps) {
 
           <div className="cart-footer">
             <strong>Total:</strong> {totalValue} din.
-            <button className="checkout-button" onClick={() => checkOut()}>
-              Checkout
+            <button className="checkout-button" disabled={isCheckout} onClick={() => checkOut()}>
+              {isCheckout?"Loading...":"Checkout"}
             </button>
           </div>
         </div>

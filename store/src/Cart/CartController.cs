@@ -72,7 +72,7 @@ public class CartController : ControllerBase
     }
     [HttpDelete]
     [Route("remove/{id}")]
-    public ActionResult RemoveItemFromCart(string id)
+    public ActionResult RemoveProductFromCart(string id)
     {
         string customer = Request.Cookies["customerID"];
         try
@@ -82,6 +82,22 @@ public class CartController : ControllerBase
             return Ok("Product is removed successfully");
         }
         catch (System.Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+    [HttpDelete]
+    [Route("remove/all")]
+    public ActionResult RemoveAllProductsFromCart()
+    {
+        string customer = Request.Cookies["customerID"];
+        try
+        {
+            JsonCommands json = db.JSON();
+            json.Del(customer, $"$.");
+            return Ok("Cart is clear");
+        }
+        catch (Exception ex)
         {
             return BadRequest(ex.Message);
         }
