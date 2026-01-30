@@ -11,3 +11,15 @@ public class BillModel
     public string CustomerId { get; set; }
     public string Note { get; set; }
 }
+public class BillData
+{
+    public string Id { get; set; }
+    public string Name { get; set; }
+    public int Price { get; set; }
+    public int Quantity { get; set; }
+}
+public class BillDTO
+{
+    public List<BillData> Products { get; set; }
+    public string Note { get; set; }
+}

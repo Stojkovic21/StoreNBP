@@ -32,6 +32,7 @@ export default function ItemCartPresent(product: CartItem) {
                   await axios.patch(`cart/inc/${product.id}/${-1}`,null,{withCredentials:true});
                   setOnBoardQuantity(onBoardQuantity - 1);
                 }
+                else deleteFromCart();
               }}
             >
               {"- "}

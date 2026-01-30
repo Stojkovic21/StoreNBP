@@ -9,7 +9,7 @@ public class CustomerBillRelationship : ControllerBase
     private readonly IDriver driver;
     private readonly Relationsip createRelationship;
 
-    public CustomerBillRelationship(IConfiguration configuration)
+    public CustomerBillRelationship()
     {
         var uri = Environment.GetEnvironmentVariable("URI");
         var user = Environment.GetEnvironmentVariable("Username");

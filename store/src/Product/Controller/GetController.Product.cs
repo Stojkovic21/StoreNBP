@@ -9,12 +9,10 @@ namespace ProductController
     [Route("product")]
     public class GetProductController : ControllerBase
     {
-        private readonly IConfiguration configuration;
         private readonly MongoClient client;
 
-        public GetProductController(IConfiguration configuration)
+        public GetProductController()
         {
-            this.configuration = configuration;
 
             client = new MongoClient(Environment.GetEnvironmentVariable("MONGODB_URI"));
         }
@@ -25,12 +23,12 @@ namespace ProductController
             try
             {
                 var itemRef = client.GetDatabase("Store").GetCollection<ProductModel>("Product");
-                var allItems = await itemRef.Find<ProductModel>(_ => true).ToListAsync();
+                var allItems = await itemRef.Find(_ => true).ToListAsync();
                 return Ok(allItems);
             }
             catch (Exception ex)
             {
-                return NotFound(new { message = "False", error = ex });
+                return NotFound(ex.Message);
             }
         }
         [Route("get/id:{id}")]
@@ -46,7 +44,7 @@ namespace ProductController
             }
             catch (Exception ex)
             {
-                return NotFound(new { message = "False", error = ex });
+                return NotFound(ex.Message);
             }
         }
         [Route("get/naziv:{naziv}")]
@@ -62,7 +60,7 @@ namespace ProductController
             }
             catch (Exception ex)
             {
-                return NotFound(new { message = "False", error = ex });
+                return NotFound(ex.Message);
             }
         }
     }

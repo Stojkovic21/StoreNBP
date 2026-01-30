@@ -17,7 +17,7 @@ function SignUp() {
 
   const onSubmit = async (data: customerDto) => {
     data.role = "Customer";
-    console.log("Data ", data);
+    //console.log("Data ", data);
     await axios.post("/customer/signup", data,{
         withCredentials: true,
       })
@@ -66,7 +66,7 @@ function SignUp() {
                 type="text"
                 className="form-control"
                 placeholder="Enter yout Lastname"
-                {...register("lastname", { required: "Lastname is required",minLength:{
+                {...register("lastName", { required: "Lastname is required",minLength:{
                   value:5,
                   message:"The lastname has to have least than 5 letters"
                 } })}

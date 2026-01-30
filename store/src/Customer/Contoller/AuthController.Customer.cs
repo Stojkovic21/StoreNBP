@@ -79,7 +79,7 @@ public class AuthCustomerController : ControllerBase
             var loginCustomer = await customerRef.Find<CustomerModel>(filter).FirstOrDefaultAsync();
             if (loginModel != null && Argon2.Verify(loginCustomer.Password, loginModel.Password))
             {
-                Console.WriteLine("Stari refresh token  " + loginCustomer.RefreshToken);
+                //Console.WriteLine("Stari refresh token  " + loginCustomer.RefreshToken);
                 //var refreshToken = await GenerateAndSaveRefreshTokenAsync(loginModel);
                 return await TokenWorker(loginCustomer);
             }
@@ -121,7 +121,7 @@ public class AuthCustomerController : ControllerBase
     private async Task<string> GenerateAndSaveRefreshTokenAsync(LoginModel loginData)
     {
         var refreshToken = GenerateRefreshToken();
-        Console.WriteLine("Novi refreshToken  " + refreshToken);
+        //Console.WriteLine("Novi refreshToken  " + refreshToken);
         //var context = new EditCustomerController();
         await UpdateRefreshTokenAsync(new CustomerModel
         {
@@ -219,7 +219,7 @@ public class AuthCustomerController : ControllerBase
             return BadRequest("Something went wrong");
 
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
             return NotFound(ex);
         }

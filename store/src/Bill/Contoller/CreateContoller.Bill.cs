@@ -8,14 +8,14 @@ namespace ProductController
     [Route("bill")]
     public class CreateBillController : ControllerBase
     {
-        private readonly IConfiguration configuration;
         private readonly MongoClient client;
         private readonly IDriver driver;
         private readonly Neo4jQuery neo4JQuery;
         private readonly IMongoDatabase db;
-        public CreateBillController(IConfiguration configuration)
+        private readonly ProductBillRelationship itembill;
+        private readonly CustomerBillRelationship customerbill;
+        public CreateBillController()
         {
-            this.configuration = configuration;
             client = new MongoClient(Environment.GetEnvironmentVariable("MONGODB_URI"));
             db = client.GetDatabase("Store");
             var uri = Environment.GetEnvironmentVariable("URI");
@@ -24,15 +24,31 @@ namespace ProductController
 
             driver = GraphDatabase.Driver(uri, AuthTokens.Basic(user, password));
             neo4JQuery = new();
+            itembill = new ProductBillRelationship();
+            customerbill = new CustomerBillRelationship();
         }
         //[Authoriza(Roles = "Admin")]
         [Route("create")]
         [HttpPost]
-        public async Task<ActionResult> CreateBillAsync([FromBody] BillModel bill)
+        public async Task<ActionResult> CreateBillAsync([FromBody] BillDTO products)
         {
             try
             {
-                //if (bill.Name == "") return BadRequest("Unesite Naziv");
+                int totalPrice = 0;
+                List<OrderModel> orders = new List<OrderModel>(); ;
+                foreach (var item in products.Products)
+                {
+                    totalPrice += item.Price * item.Quantity;
+                    orders.Add(new OrderModel { Product = new ProductModel { _id = item.Id, Name = item.Name, Price = item.Price, Description = "" }, Quantity = item.Quantity });
+                }
+                BillModel bill = new()
+                {
+                    Date = DateTime.UtcNow.ToLocalTime(),
+                    CustomerId = Request.Cookies["customerID"],
+                    Note = products.Note,
+                    TotalPrice = totalPrice,
+                    Orders = orders,
+                };
                 var billRef = db.GetCollection<BillModel>("Bill");
 
                 await billRef.InsertOneAsync(bill);
@@ -48,11 +64,19 @@ namespace ProductController
                 };
                 var result = await neo4JQuery.ExecuteWriteAsync(session, query, parameters);
 
+                // //connect bill with items neo4j
+
+                foreach (var item in products.Products)
+                {
+                    await itembill.ConnectRelationshipProductBillAsync(new RelationshipModel { SourceId = item.Id, TargetId = bill._id, Count = item.Quantity });
+                }
+                await customerbill.ConncetRelationshiCustomerBillAsync(new RelationshipModel { SourceId = bill.CustomerId, TargetId = bill._id });
+
                 return Ok("Bill added successfulyu");
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                return BadRequest(ex.Message);
             }
         }
     }

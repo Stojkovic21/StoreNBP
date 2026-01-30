@@ -22,10 +22,6 @@ function Artikal(product: productDto) {
     <div className="card-content">
       <h2 className="card-title">{product.name}</h2>
       
-      <p className="card-info">
-        Gramaža: <span>{product.weight_g}g</span>
-      </p>
-      
       <p className="card-price">
         {product.price} RSD
       </p>

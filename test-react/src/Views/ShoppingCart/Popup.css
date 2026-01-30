@@ -1,0 +1,39 @@
+.popup {
+  position: fixed;
+  top: -100px;              /* start iznad ekrana */
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 16px 24px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  z-index: 999;
+}
+.popup.enter{
+  animation: slideDown 0.4s ease forwards;
+}
+.popup.exit{
+  animation:slideUp 0.3s ease forwards;
+}
+/* animacija spuštanja */
+@keyframes slideDown {
+  from {
+    top: -100px;
+    opacity: 0;
+  }
+  to {
+    top: 20px;
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    top: 20px;
+    opacity: 1;
+  }
+  to {
+    top: -100px;
+    opacity: 0;
+  }
+}

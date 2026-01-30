@@ -7,6 +7,7 @@ import { axiosPrivate } from "../../api/axios";
 import Header from "../Header/Header";
 import CartDTO from "../../DTOs/CartDTO";
 import useShoppingCart from "../../hooks/useShoppingCart";
+import SuccessPopup from "../ShoppingCart/PopupSuccessfullyAdded";
 type quantityType = {
   quantity: number;
 };
@@ -14,34 +15,38 @@ const ProductCard = () => {
   const param = useParams();
   const [product, setProduct] = useState<productDto>();
   const [kolicina, setKolicina] = useState<number>(1);
-  const {setQuantityIsChangedGlobal}=useShoppingCart();
-  const {
-    handleSubmit,
-  } = useForm<quantityType>();
+  const { setQuantityIsChangedGlobal } = useShoppingCart();
+  const { handleSubmit } = useForm<quantityType>();
+  const [showPopup, setShowPopup]=useState(false);
 
   useEffect(() => {
     const fetchItems = async () => {
       const response = await axiosPrivate.get(
-        `/product/get/id:${param.productid}`
+        `/product/get/id:${param.productid}`,
       );
       setProduct(response.data);
     };
     fetchItems();
-  },[]);
+  }, []);
 
   const onSubmit: SubmitHandler<quantityType> = async () => {
-    if(kolicina!==0)
-    {
+    if (kolicina !== 0) {
       const cart: CartDTO = {
         Id: product?._id,
         Name: product?.name,
         Price: product?.price,
         Quantity: kolicina,
       };
-      
-      await axiosPrivate.post("/cart/new", cart);
+
+      await axiosPrivate.post("/cart/new", cart).then((response) => {
+        if (response.status === 200) {
+          setShowPopup(true);
+          setTimeout(() => setShowPopup(false), 2000);
+        }
+      });
       setQuantityIsChangedGlobal();
-    }else {console.log("Kolicina 0");
+    } else {
+      console.log("Kolicina 0");
     }
     // console.log('TS Porudžbina:', {
     //   productId: product.id,
@@ -56,9 +61,11 @@ const ProductCard = () => {
   return (
     <>
       <Header />
+      <SuccessPopup
+        show={showPopup} text="Uspesno dodato u korpu"
+      />
       <div className="product-container">
         <div className="product-card">
-          
           <div className="product-image-section">
             mesto za sliku
             {/* <img src={product.image} alt={product.name} className="product-img" /> */}
@@ -91,9 +98,12 @@ const ProductCard = () => {
                     {"+"}{" "}
                   </label>
                 </div>
-                
-                  {!kolicina&&<div className="redError">*Broj porudzbina ne moze biti 0</div>}
-                
+
+                {!kolicina && (
+                  <div className="redError">
+                    *Broj porudzbina ne moze biti 0
+                  </div>
+                )}
               </div>
 
               <button type="submit" className="btn-order">

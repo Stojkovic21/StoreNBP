@@ -57,21 +57,6 @@ function AddProduct() {
             {errors.price && (
               <div className="redError">{errors.price.message}</div>
             )}
-            <div className="mb-3">
-              <label className="form-label">Weight in g</label>
-              <input
-                {...register("weight_g", {
-                  required: "*weight is require",
-                })}
-                type="number"
-                className="form-control"
-                name="weight_g"
-                placeholder="Enter neto quantity here"
-              />
-            </div>
-            {errors.weight_g && (
-              <div className="redError">{errors.weight_g.message}</div>
-            )}
 
             <div className="input-wrapper">
               <label className="form-label">Description</label>

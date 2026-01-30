@@ -4,8 +4,8 @@ using Sprache;
 
 public class OrderModel
 {
-    public ProductModel Item { get; set; }
-    public double Count { get; set; }
+    public ProductModel Product { get; set; }
+    public double Quantity { get; set; }
     // public OrderModel(ItemModel item, int count)
     // {
     //     this.Item = item;
@@ -13,6 +13,6 @@ public class OrderModel
     // }
     public double TotalPrice()
     {
-        return Item.Price * Count;
+        return Product.Price * Quantity;
     }
 }

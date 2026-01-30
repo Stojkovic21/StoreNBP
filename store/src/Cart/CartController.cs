@@ -17,9 +17,9 @@ public class CartController : ControllerBase
         muxer = ConnectionMultiplexer.Connect(
             new ConfigurationOptions
             {
-                EndPoints = { { "redis-17361.c293.eu-central-1-1.ec2.cloud.redislabs.com", 17361 } },
+                EndPoints = { { "redis-15231.c300.eu-central-1-1.ec2.cloud.redislabs.com", 15231 } },
                 User = "default",
-                Password = "L95TqI1CiBLhUKKNLt6cIvr7NtP6OF6d",
+                Password = "jefpmA18JveLRmbJDw2e6LLaSTMwhYL5",
                 AbortOnConnectFail = false,
             }
         );
@@ -48,9 +48,9 @@ public class CartController : ControllerBase
             json.Set(customer, "$." + cartProduct.Id, product);
             return Ok("Uspesno dodato u bazu");
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
-            return BadRequest("Doslo je do greske prilikom povezivanja na bazu\n" + ex);
+            return BadRequest(ex.Message);
         }
     }
     [HttpPatch]
@@ -67,7 +67,7 @@ public class CartController : ControllerBase
         }
         catch (System.Exception x)
         {
-            return BadRequest(x);
+            return BadRequest(x.Message);
         }
     }
     [HttpDelete]
@@ -81,9 +81,9 @@ public class CartController : ControllerBase
             json.Del(customer, $"$.{id}");
             return Ok("Product is removed successfully");
         }
-        catch (System.Exception)
+        catch (System.Exception ex)
         {
-            return BadRequest("Something went wrong");
+            return BadRequest(ex.Message);
         }
     }
     [HttpGet]
@@ -107,7 +107,7 @@ public class CartController : ControllerBase
         }
         catch (System.Exception x)
         {
-            return BadRequest(x);
+            return BadRequest(x.Message);
         }
     }
     [HttpGet]
@@ -125,9 +125,9 @@ public class CartController : ControllerBase
             }
             return BadRequest("Item does not exist");
         }
-        catch (System.Exception)
+        catch (System.Exception ex)
         {
-            throw;
+            return BadRequest(ex.Message);
         }
     }
 }
