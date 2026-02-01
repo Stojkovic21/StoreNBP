@@ -94,7 +94,7 @@ public class CartController : ControllerBase
         try
         {
             JsonCommands json = db.JSON();
-            json.Del(customer, $"$.");
+            json.Del(customer, $"$.*");
             return Ok("Cart is clear");
         }
         catch (Exception ex)

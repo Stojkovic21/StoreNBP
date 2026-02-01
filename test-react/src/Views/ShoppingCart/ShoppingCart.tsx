@@ -1,4 +1,4 @@
-import axios from "../../api/axios";
+import axios, { axiosPrivate } from "../../api/axios";
 import useShoppingCart from "../../hooks/useShoppingCart";
 import ItemCartPresent from "./ItemCartPresent";
 import SuccessPopup from "./PopupSuccessfullyAdded";
@@ -20,6 +20,7 @@ function ShoppingCart({ isOpen }: ShoppingCartProps) {
   const [totalValue, setTotalValue] = useState<number>(0);
   const [showPopup, setShowPopup] = useState(false);
   const [isCheckout, setIsCheckout]= useState(false);
+  const {setQuantityIsChangedGlobal}=useShoppingCart();
   useEffect(() => {
     const itemsInCart = async () => {
       try {
@@ -61,7 +62,8 @@ function ShoppingCart({ isOpen }: ShoppingCartProps) {
         if (response.status === 200) {
           setIsCheckout(true);
           closeCart();
-          axios.delete("/cart/remove/all");
+          axiosPrivate.delete("/cart/remove/all");
+          setQuantityIsChangedGlobal();
           setShowPopup(true);
           setTimeout(() => setShowPopup(false), 2000);
         }
