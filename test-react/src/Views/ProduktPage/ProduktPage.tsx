@@ -8,6 +8,7 @@ import Header from "../Header/Header";
 import CartDTO from "../../DTOs/CartDTO";
 import useShoppingCart from "../../hooks/useShoppingCart";
 import SuccessPopup from "../ShoppingCart/PopupSuccessfullyAdded";
+import Recommendation from "../Recommendation/Recommendation";
 type quantityType = {
   quantity: number;
 };
@@ -15,7 +16,7 @@ const ProductCard = () => {
   const param = useParams();
   const [product, setProduct] = useState<productDto>();
   const [kolicina, setKolicina] = useState<number>(1);
-  const { setQuantityIsChangedGlobal } = useShoppingCart();
+  const { setQuantityIsChangedGlobal} = useShoppingCart();
   const { handleSubmit } = useForm<quantityType>();
   const [showPopup, setShowPopup]=useState(false);
 
@@ -44,6 +45,7 @@ const ProductCard = () => {
           setTimeout(() => setShowPopup(false), 2000);
         }
       });
+      //incCartQuantity();
       setQuantityIsChangedGlobal();
     } else {
       console.log("Kolicina 0");
@@ -112,6 +114,7 @@ const ProductCard = () => {
             </form>
           </div>
         </div>
+        <Recommendation/>
       </div>
     </>
   );

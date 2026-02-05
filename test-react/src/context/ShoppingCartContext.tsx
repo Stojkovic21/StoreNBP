@@ -25,7 +25,8 @@ export function ShoppingCardProvider({ children }: ShoppingCartProps) {
     if(quantityIsChanged==false) setQuantityIsChanged(true);
     else setQuantityIsChanged(false);
   }
-  function incCartQuantity(){setCartQuantity(cartQuantity++);}
+  function incCartQuantity(){setCartQuantity(cartQuantity++);
+  }
   function decCartQuantity(){setCartQuantity(cartQuantity--);}
   function openCart() {
     setIsOpen(true);

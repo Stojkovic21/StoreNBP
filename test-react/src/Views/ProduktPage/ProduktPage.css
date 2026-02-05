@@ -1,6 +1,6 @@
 /* Kontejner za centriranje na ekranu */
 .product-container {
-  display: flex;
+  
   justify-content: center;
   min-height: 100vh;
   background-color: #f4f4f9;
