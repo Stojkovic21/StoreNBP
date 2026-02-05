@@ -6,10 +6,11 @@ import productDTo from "../../DTOs/ProductDto";
 import "../style/Card.css";
 import Header from "../Header/Header";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
+import axios from "../../api/axios";
 
 function AddProduct() {
   const axiosPrivate = useAxiosPrivate();
-
+  const [file,setFile]=useState<File>()
   const {
     register,
     handleSubmit,
@@ -20,8 +21,22 @@ function AddProduct() {
   const [isOpen, setIsOpen] = useState(false);
 
   const onSubmit: SubmitHandler<productDTo> = async (data) => {
+    const formData=new FormData();
+    if(file){
+      data.image=file.name
+      formData.append("Image",file);
+      formData.append("Title",file.name);
+    }
+    console.log(data.image);
+    
     await axiosPrivate.post("/product/add", data);
+    await axios.post("/product/upload",formData);
     window.location.reload();
+  };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+      if (!selectedFile) return;
+    setFile(selectedFile);
   };
 
   return (
@@ -100,6 +115,15 @@ function AddProduct() {
                   </div>
                 </div>
               )}
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Upload image</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleChange}
+                className="form-control"
+              />
             </div>
             <button
               disabled={isSubmitting}

@@ -53,5 +53,27 @@ namespace ProductController
                 return BadRequest(ex);
             }
         }
+        [HttpPost("upload")]
+        public async Task<IActionResult> UploadImage([FromForm] UploadImageDTO image)
+        {
+            if (image.Image == null || image.Image.Length == 0)
+                return BadRequest("Fajl nije poslat");
+
+            var uploadFolder = Path.Combine(
+            Directory.GetCurrentDirectory(),
+            "..",
+            "test-react",
+            "src",
+            "Images"
+            );
+            //var fileName = $"{Guid.NewGuid()}{Path.GetExtension(image.FileName)}";
+            //ovo cemo pretpostaviti za sad da nece imati isto ime
+            var path = Path.Combine(uploadFolder, image.Title);
+
+            using var stream = new FileStream(path, FileMode.Create);
+            await image.Image.CopyToAsync(stream);
+
+            return Ok("Image is successfully saved");
+        }
     }
 }

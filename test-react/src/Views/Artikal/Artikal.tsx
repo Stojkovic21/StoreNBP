@@ -12,7 +12,7 @@ function Artikal(product: productDto) {
     {/* Slika Proizvoda */}
     <div className="card-image-container">
       <img 
-        //src={product.image || "https://via.placeholder.com/300"} 
+        src={`/src/Images/${product.image}`} 
         alt={product.name+" slika"} 
         className="card-image" 
       />

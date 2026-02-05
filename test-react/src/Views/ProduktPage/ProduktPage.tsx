@@ -17,7 +17,7 @@ const ProductCard = () => {
   const [product, setProduct] = useState<productDto>();
   const [kolicina, setKolicina] = useState<number>(1);
   const { setQuantityIsChangedGlobal} = useShoppingCart();
-  const { handleSubmit } = useForm<quantityType>();
+  const { handleSubmit, formState:{isSubmitting}} = useForm<quantityType>();
   const [showPopup, setShowPopup]=useState(false);
 
   useEffect(() => {
@@ -69,8 +69,7 @@ const ProductCard = () => {
       <div className="product-container">
         <div className="product-card">
           <div className="product-image-section">
-            mesto za sliku
-            {/* <img src={product.image} alt={product.name} className="product-img" /> */}
+             <img src={`/src/Images/${product?.image}`} alt={product?.name} className="product-img" />
           </div>
 
           <div className="product-details-section">
@@ -108,7 +107,7 @@ const ProductCard = () => {
                 )}
               </div>
 
-              <button type="submit" className="btn-order">
+              <button type="submit" className="btn-order" disabled={isSubmitting}>
                 Dodaj u korpu
               </button>
             </form>

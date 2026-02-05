@@ -11,9 +11,8 @@ export default function ProductRecoCard(product: productDto) {
         window.location.reload();
       }}
     >
-      <div className="product-reco-image-container">
-        {/* <img src={product.imageUrl} alt={product.name} className="product-image" /> */}
-        mesto za sliku
+      <div className="product-reco-image-wrapper">
+        <img src={`/src/Images/${product.image}`} alt={product.name} className="product-reco-image" />
       </div>
       <div className="product-reco-info">
         <h3 className="product-reco-name">{product.name}</h3>

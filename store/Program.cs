@@ -46,7 +46,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseCors("AllowFrontend");
-
+app.UseStaticFiles();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 //app.UseAuthentication(); zbog ovo nije radio authorization nzm sta i kako samo nije radilo
