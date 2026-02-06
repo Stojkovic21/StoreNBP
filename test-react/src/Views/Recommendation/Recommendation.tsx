@@ -15,7 +15,6 @@ export default function Recommendation()
             const response = await axios.get(`/recommendation/alsobuy/${param.productid}`);
             setProducts(response.data);
           } catch (err) {
-          } finally {
           }
         };
     

@@ -8,6 +8,7 @@ import { AuthProvider } from "./context/AuthContrext";
 import { ShoppingCardProvider } from "./context/ShoppingCartContext";
 import ProductCard from "./Views/ProduktPage/ProduktPage";
 import ProfilePage from "./Views/ProfilaPage/ProfilePage";
+import MyBills from "./Views/Bill/MyBills";
 
 const router = createBrowserRouter([
   //razlika izmedju link i a je sto a refresuje ceo html i js a link samo prosledi na tu stranicu
@@ -39,6 +40,11 @@ const router = createBrowserRouter([
   {
     path:'profile/',
     element: <ProfilePage />,
+    errorElement: <div>404 not found</div>,
+  },
+  {
+    path:"/mybills",
+    element:<MyBills/>,
     errorElement: <div>404 not found</div>,
   }
 ]);

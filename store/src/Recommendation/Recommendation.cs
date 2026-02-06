@@ -8,7 +8,6 @@ using ProductController;
 public class Recommendation : ControllerBase
 {
     private readonly IDriver driver;
-    private readonly GetProductController getProduct;
     private readonly MongoClient client;
     public Recommendation()
     {
@@ -19,7 +18,6 @@ public class Recommendation : ControllerBase
         var password = Environment.GetEnvironmentVariable("Password");
 
         driver = GraphDatabase.Driver(uri, AuthTokens.Basic(user, password));
-        getProduct = new();
     }
     private async Task<List<string>> AlsoBuyFromNeo4J(string productId)
     {
@@ -33,7 +31,7 @@ public class Recommendation : ControllerBase
                         WHERE rec.id <> $productId
                         RETURN rec.id as ProductId, count(*) as score
                         ORDER BY score DESC
-                        LIMIT 5";
+                        LIMIT 10";
             var parameters = new Dictionary<string, object> { { "productId", productId } };
             var result = await session.ExecuteReadAsync(async tx =>
             {

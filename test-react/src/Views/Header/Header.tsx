@@ -20,26 +20,29 @@ export default function main() {
         </div>
         <nav className="nav-links">
           <Link to="/newitem">New item</Link>
-          {isAuthenticated ? (
-            <Link
-              to="/login"
-              onClick={async () => {
-                handleSignOut();
-                axios.get("/customer/signout", { withCredentials: true });
-              }}
-            >
-              SignOut
-            </Link>
-          ) : (
+            {isAuthenticated ? (
+            <>
+              <Link to={`/mybills`}>My Bills</Link>
+              <Link
+                to="/login"
+                onClick={async () => {
+                  handleSignOut();
+                  axios.get("/customer/signout", { withCredentials: true });
+                }}
+              >
+                SignOut
+              </Link>
+            </>
+            ) : (
             <>
               <Link to="/login">Login</Link>
               <Link to="/signup">Sign In</Link>
             </>
-          )}
+            )}
         </nav>
         <>
-        <Profile/>
-        <Cart />
+          <Profile />
+          <Cart />
         </>
       </header>
     </>

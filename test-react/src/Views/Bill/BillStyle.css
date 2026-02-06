@@ -1,0 +1,117 @@
+.page-wrapper {
+  max-width: 600px;
+  margin: 40px auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 0 20px;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+}
+
+.bills-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.bill-container {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+.bill-container.active {
+  border-color: #007bff;
+  box-shadow: 0 4px 12px rgba(0,123,255,0.15);
+}
+
+.bill-header {
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  background-color: #fcfcfc;
+}
+
+.bill-header:hover {
+  background-color: #f0f7ff;
+}
+
+.bill-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.bill-date {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.bill-note {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #222;
+}
+
+.bill-total {
+  font-weight: bold;
+  color: #28a745;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.arrow {
+  font-size: 0.7rem;
+  transition: transform 0.3s ease;
+  color: #999;
+}
+
+.arrow.up {
+  transform: rotate(180deg);
+}
+
+.bill-details {
+  background-color: #fff;
+  border-top: 1px dashed #e0e0e0;
+  animation: slideDown 0.3s ease-out;
+}
+
+.items-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.item-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 20px;
+  border-bottom: 1px solid #007bff;
+  font-size: 0.95rem;
+}
+
+.item-row:last-child {
+  border-bottom: none;
+}
+
+.item-name {
+  color: #444;
+  width: 100px;
+}
+
+.item-price {
+  color: #666;
+}
+
+/* Animacija za spustanje */
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
