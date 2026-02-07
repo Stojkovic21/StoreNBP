@@ -91,20 +91,28 @@
   color: #444;
   margin-top: 2px;
 }
-
-.edit-button {
+.btn{
   width: 100%;
   padding: 12px;
   margin-top: 10px;
   border: none;
   border-radius: 8px;
-  background-color: #667eea;
   color: white;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s;
 }
+.edit-button {
+  background-color: #667eea;
+  }
 
 .edit-button:hover {
   background-color: #5a67d8;
+}
+.delete-button {
+  background-color: red;
+  }
+
+.delete-button:hover {
+  background-color: darkred;
 }

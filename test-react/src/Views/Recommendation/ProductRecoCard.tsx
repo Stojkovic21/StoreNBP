@@ -16,7 +16,7 @@ export default function ProductRecoCard(product: productDto) {
       </div>
       <div className="product-reco-info">
         <h3 className="product-reco-name">{product.name}</h3>
-        <p className="product-reco-price">{product.price}</p>
+        <p className="product-reco-price">{product.price} rsd</p>
       </div>
     </div>
   );

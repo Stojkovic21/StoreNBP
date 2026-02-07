@@ -9,10 +9,8 @@ public class DeleteCustomerController : ControllerBase
 {
     private readonly MongoClient client;
     private readonly IMongoDatabase db;
-    private readonly IConfiguration configuration;
-    public DeleteCustomerController(IConfiguration configuration)
+    public DeleteCustomerController()
     {
-        this.configuration = configuration;
         client = new MongoClient(Environment.GetEnvironmentVariable("MONGODB_URI"));
         db = client.GetDatabase("Store");
     }
@@ -36,12 +34,12 @@ public class DeleteCustomerController : ControllerBase
             var filter = Builders<CustomerModel>.Filter.Eq(f => f.Email, email);
             var result = await userRef.FindOneAndDeleteAsync<CustomerModel>(filter);
             if (result is null)
-            { return NotFound("Item not found"); }
-            return Ok("Item successfuly deleted");
+            { return NotFound("Customer not found"); }
+            return Ok("Customer successfuly deleted");
         }
         catch (Exception ex)
         {
-            return NotFound(new { message = "False", error = ex });
+            return NotFound(ex.Message);
         }
     }
 }

@@ -1,40 +1,56 @@
 //import { FormEvent, useCallback, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import "./AddProduct.css";
-import { useState } from "react";
-import productDTo from "../../DTOs/ProductDto";
+import { useEffect, useState } from "react";
+import productDTO from "../../DTOs/ProductDto";
 import "../style/Card.css";
 import Header from "../Header/Header";
 import useAxiosPrivate from "../../hooks/useAxiosPrivate";
 import axios from "../../api/axios";
+import { useNavigate, useParams } from "react-router-dom";
 
-function AddProduct() {
+export default function EditProduct() {
+  const param = useParams();
+  const productId=param.productid;
   const axiosPrivate = useAxiosPrivate();
-  const [file,setFile]=useState<File>()
+  const navigate = useNavigate();
+  const [file, setFile] = useState<File>();
+  const [product, setProduct] = useState<productDTO>();
+  const [text, setText] = useState("");
+  const [isOpen, setIsOpen] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<productDTo>();
+  } = useForm<productDTO>();
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const result = await axios.get(`/product/get/id:${productId}`);
+        setProduct(result.data);
+        setText(result.data.description);
+      } catch (error) {}
+    };
+    fetchItems();
+  }, []);
 
-  const [text, setText] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
-
-  const onSubmit: SubmitHandler<productDTo> = async (data) => {
-    const formData=new FormData();
-    if(file){
-      data.image=file.name
-      formData.append("Image",file);
-      formData.append("Title",file.name);
-      await axios.post("/product/upload",formData);
+  const onSubmit: SubmitHandler<productDTO> = async (data) => {
+    const formData = new FormData();
+    if (file) {
+      data.image = file.name;
+      formData.append("Image", file);
+      formData.append("Title", file.name);
+      await axios.post("/product/upload", formData);
+    } else {
+      data.image = product?.image ? product.image : "";
     }
-    
-    await axiosPrivate.post("/product/add", data);
-    window.location.reload();
+
+    await axiosPrivate.put(`/product/edit/${productId}`, data);
+    navigate(`/product/${productId}`);
   };
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
-      if (!selectedFile) return;
+    if (!selectedFile) return;
     setFile(selectedFile);
   };
 
@@ -52,6 +68,7 @@ function AddProduct() {
                 type="text"
                 className="form-control"
                 name="name"
+                defaultValue={product?.name}
                 placeholder="Enter item name"
               />
             </div>
@@ -65,6 +82,7 @@ function AddProduct() {
                 type="number"
                 className="form-control"
                 name="price"
+                defaultValue={product?.price}
                 placeholder="Enter item price"
               />
             </div>
@@ -86,7 +104,6 @@ function AddProduct() {
 
               {isOpen && (
                 <div className="modal-overlay" onClick={() => setIsOpen(false)}>
-                  
                   <div
                     className="modal-content"
                     onClick={(e) => e.stopPropagation()}
@@ -94,15 +111,20 @@ function AddProduct() {
                     <h2 className="modal-title">Product description</h2>
 
                     <textarea
-                    {...register("description",{required:"*Description is required"})}
+                      {...register("description", {
+                        required: "*Description is required",
+                      })}
                       className="modal-textarea"
                       value={text}
+                      defaultValue={product?.description}
                       onChange={(e) => setText(e.target.value)}
                       placeholder="Description..."
                       autoFocus
                     />
-                    {errors.description&&(
-                      <div className="redError">{errors.description.message}</div>
+                    {errors.description && (
+                      <div className="redError">
+                        {errors.description.message}
+                      </div>
                     )}
 
                     <button
@@ -137,5 +159,3 @@ function AddProduct() {
     </>
   );
 }
-
-export default AddProduct;

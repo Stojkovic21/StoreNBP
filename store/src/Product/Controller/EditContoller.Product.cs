@@ -22,6 +22,7 @@ namespace ProductController
         {
             try
             {
+                updatedProduct._id = id;
                 var itemRef = client.GetDatabase("Store").GetCollection<ProductModel>("Product");
                 var filter = Builders<ProductModel>.Filter.Eq(r => r._id, id);
                 var result = await itemRef.ReplaceOneAsync(filter, updatedProduct);
@@ -36,7 +37,7 @@ namespace ProductController
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                return BadRequest(ex.Message);
             }
         }
     }

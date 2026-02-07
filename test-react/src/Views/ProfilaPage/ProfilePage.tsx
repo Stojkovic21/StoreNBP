@@ -23,6 +23,9 @@ function ProfilePage() {
         fetchItems();
         
     },[isAuthenticated]);
+    const Delete=async()=>{
+        
+    }
   return (
     <>
         <Header/>
@@ -67,7 +70,8 @@ function ProfilePage() {
                 </div>
             </div>
 
-            <button className="edit-button" onClick={(()=>{setIsEditing(true)})}>Edit Profile</button>
+            <button className="btn edit-button" onClick={(()=>{setIsEditing(true)})}>Edit Profile</button>
+            <button className="btn delete-button" onClick={(()=>{Delete()})}>Delete Profile</button>
             </div>
         </div>
         </div>}

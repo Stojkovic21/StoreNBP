@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import "./ProduktPage.css";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import productDto from "../../DTOs/ProductDto";
-import { axiosPrivate } from "../../api/axios";
+import axios, { axiosPrivate } from "../../api/axios";
 import Header from "../Header/Header";
 import CartDTO from "../../DTOs/CartDTO";
 import useShoppingCart from "../../hooks/useShoppingCart";
@@ -14,6 +14,7 @@ type quantityType = {
 };
 const ProductCard = () => {
   const param = useParams();
+  const navigate=useNavigate();
   const [product, setProduct] = useState<productDto>();
   const [kolicina, setKolicina] = useState<number>(1);
   const { setQuantityIsChangedGlobal} = useShoppingCart();
@@ -45,19 +46,21 @@ const ProductCard = () => {
           setTimeout(() => setShowPopup(false), 2000);
         }
       });
-      //incCartQuantity();
       setQuantityIsChangedGlobal();
     } else {
       console.log("Kolicina 0");
     }
-    // console.log('TS Porudžbina:', {
-    //   productId: product.id,
-    //   productName: product.title,
-    //   quantity: data.quantity
-    // });
-
-    // alert(`Uspešno poručeno: ${data.quantity} kom. artikla "${product.title}"`);
-    // reset();
+  };
+  const Edit=()=>{
+    navigate(`/product/edit/${param.productid}`);
+  };
+  const Delete=async()=>{
+    try {
+      await axios.delete(`/product/delete/${param.productid}`);
+      navigate("/");
+    } catch (error) {
+      
+    }
   };
 
   return (
@@ -111,6 +114,10 @@ const ProductCard = () => {
                 Dodaj u korpu
               </button>
             </form>
+            <div className="button-wrapper">
+              <button className="btn btn-edit" onClick={Edit}>Edit</button>
+              <button className="btn btn-delete" onClick={Delete}>Delete</button>
+            </div>
           </div>
         </div>
         <Recommendation/>
