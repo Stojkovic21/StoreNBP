@@ -1,17 +1,20 @@
 import { useEffect, useState } from 'react';
 import './ProfilePage.css';
 import customerDto from '../../DTOs/CustomerDto';
-import axios from '../../api/axios';
+import axios, { axiosPrivate } from '../../api/axios';
 import useAuth from '../../hooks/useAuth';
 import Header from '../Header/Header';
 import EditProfilePage from './EditProfilePage';
 import useRefreshToken from '../../hooks/useRefreshToken';
+import { useNavigate } from 'react-router-dom';
 
 function ProfilePage() {
+    const navigate=useNavigate();
     const [customer, setCustomer]=useState<customerDto>();
-    const {customerId,isAuthenticated}=useAuth();
+    const {customerId,isAuthenticated,handleSignOut}=useAuth();
     const refresh=useRefreshToken()
     const [isEditing,setIsEditing]=useState(false);
+
     useEffect(()=>{
         const fetchItems=async()=>{
             const result=await axios.get(`/customer/${customerId}`);
@@ -24,7 +27,13 @@ function ProfilePage() {
         
     },[isAuthenticated]);
     const Delete=async()=>{
-        
+        try {
+            await axiosPrivate.delete("/customer/delete");
+            handleSignOut();
+            navigate("/");
+        } catch (error) {
+            
+        }
     }
   return (
     <>

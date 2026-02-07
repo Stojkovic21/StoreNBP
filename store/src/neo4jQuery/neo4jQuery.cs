@@ -2,9 +2,9 @@ using Neo4j.Driver;
 
 public class Neo4jQuery
 {
-    public string QueryByOneElement(string type, string name, string value,string behavioe)
+    public string QueryByOneElement(string type, string name, string value, string behavior)
     {
-        return "MATCH (n:" + type + " {" + name + ":$" + value + "}) "+behavioe+" n";
+        return "MATCH (n:" + type + " {" + name + ":$" + value + "}) " + behavior + " n";
     }
 
     public async Task<INode> ExecuteReadAsync(IAsyncSession session, string quary, Dictionary<string, object> parameters)
